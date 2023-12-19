@@ -9,7 +9,7 @@ import { schema } from './album.schema';
 export class AlbumService {
   private repository: Repository;
   constructor(private readonly redisClient: RedisClientService) {
-    this.repository = redisClient.fetchRepository(schema);
+   // this.repository = redisClient.fetchRepository(schema);
     // (async () => {await this.repository.createIndex()})();
   }
   async create() {

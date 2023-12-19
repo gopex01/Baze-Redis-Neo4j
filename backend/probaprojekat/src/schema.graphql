@@ -1,7 +1,0 @@
-type Mutation{
-    dodajIgraca(ime: String!): Igrac
-}
-type Igrac{
-    id:ID!
-    ime:String!
-}

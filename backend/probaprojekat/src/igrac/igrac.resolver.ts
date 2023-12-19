@@ -1,6 +1,6 @@
 import { Neo4jService } from "src/neo4j/neo4j.service";
 import { Igrac } from "./igrac.entity";
-import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
+import { Resolver, Query, Args } from '@nestjs/graphql';
 @Resolver(()=>Igrac)
 export class IgracResolver{
 
@@ -8,7 +8,7 @@ export class IgracResolver{
     {
 
     }
-    @Mutation(()=>Igrac)
+    @Query(()=>Igrac)
     async dodajIgraca(@Args('ime') ime: string):Promise<Igrac>{
 
         await this.neo4jService.sacuvajIgraca(ime);

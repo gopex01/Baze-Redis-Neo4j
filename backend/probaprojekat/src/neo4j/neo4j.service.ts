@@ -1,13 +1,15 @@
 import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { Driver, Session } from 'neo4j-driver';
+import neo4j from 'neo4j-driver';
 
 @Injectable()
 export class Neo4jService{
-    private readonly driver:Driver;
+    private readonly driver;
     
     constructor(private readonly configService:ConfigService){
-        this.driver=this.createDriver();
+        //this.driver=this.createDriver();
+        this.driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('',''));
     }
     private createDriver():Driver{
         const neo4jUrl=this.configService.get('NEO4J_URI');
