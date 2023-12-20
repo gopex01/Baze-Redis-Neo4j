@@ -29,6 +29,9 @@ export class Neo4jService{
       const session:Session=this.driver.session();
       try{
         const result=await session.run('MATCH (n:Player) RETURN n');
+        console.log("Bez records");
+        console.log(result);
+        console.log("Sa records");
         console.log(result.records);
         return result.records.map(record=>record.get('n').properties);
       } 
