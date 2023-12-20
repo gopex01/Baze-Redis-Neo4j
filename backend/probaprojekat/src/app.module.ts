@@ -7,8 +7,9 @@ import { RedisClientModule } from './redis-client/redis-client.module';
 import { AlbumModule } from './album/album.module';
 import { Neo4jModule } from 'nest-neo4j'
 import { RedisClientService } from './redis-client/redis-client.service';
-import { IgracResolver } from './igrac/igrac.resolver';
+import { IgracResolver } from './player/player.resolver';
 import { Neo4jService } from './neo4j/neo4j.service';
+import { PlayerModule } from './player/player.module';
 
 @Module({
   imports: [
@@ -26,8 +27,9 @@ import { Neo4jService } from './neo4j/neo4j.service';
     }),
     RedisClientModule,
     AlbumModule,
+    PlayerModule
   ],
   controllers: [AppController],
-  providers: [AppService,RedisClientService,IgracResolver,Neo4jService],
+  providers: [AppService,RedisClientService,Neo4jService],
 })
 export class AppModule {}
