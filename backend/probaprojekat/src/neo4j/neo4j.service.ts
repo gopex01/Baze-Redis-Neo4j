@@ -16,6 +16,21 @@ export class Neo4jService {
     );
   }
 
+  //!---------------------TOURNAMENT-----------------------------
+  async allTournaments() {
+    console.log('vracam sve turnire');
+    const session: Session = this.driver.session();
+    try {
+      const result = await session.run('MATCH (t:TOURNAMENT) RETURN t ');
+      console.log(result.records);
+      console.log('mapirano:');
+      console.log(result.records.map((record) => record.get('t').properties));
+      // return 'ok';
+      return result.records.map((record) => record.get('t').properties);
+    } finally {
+      await session.close();
+    }
+  }
   async addTournament(
     name: string,
     date: string,
@@ -35,6 +50,56 @@ export class Neo4jService {
       await session.close();
     }
   }
+  async deleteTournament(turnirId: number) {
+    //vezuje se za prijave
+  }
+  async filterTournaments(
+    pretragaNaziv: string | undefined,
+    pretragaMesto: string | undefined,
+    pretragaPocetniDatum: string | undefined,
+    pretragaKrajnjiDatum: string | undefined,
+    pretragaPocetnaNagrada: number | undefined,
+    pretragaKrajnjaNagrada: number | undefined,
+  ) {
+    const session: Session = this.driver.session();
+    try {
+      let query = 'MATCH (t:TOURNAMENT) WHERE 1=1';
+
+      const params: { [key: string]: any } = {};
+
+      if (pretragaNaziv) {
+        query += ' AND t.Name CONTAINS $pretragaNaziv';
+        params.pretragaNaziv = pretragaNaziv;
+      }
+
+      if (pretragaMesto) {
+        query += ' AND t.Place CONTAINS $pretragaMesto';
+        params.pretragaMesto = pretragaMesto;
+      }
+
+      // Ovo je primjer za filtriranje prema datumima, potrebno je prilagoditi zahtjevima vaše baze podataka
+      if (pretragaPocetniDatum && pretragaKrajnjiDatum) {
+        query +=
+          ' AND t.Date >= $pretragaPocetniDatum AND t.Date <= $pretragaKrajnjiDatum';
+        params.pretragaPocetniDatum = pretragaPocetniDatum;
+        params.pretragaKrajnjiDatum = pretragaKrajnjiDatum;
+      }
+
+      if (pretragaPocetnaNagrada && pretragaKrajnjaNagrada) {
+        query +=
+          ' AND t.Price >= $pretragaPocetnaNagrada AND t.Price <= $pretragaKrajnjaNagrada';
+        params.pretragaPocetnaNagrada = pretragaPocetnaNagrada;
+        params.pretragaKrajnjaNagrada = pretragaKrajnjaNagrada;
+      }
+      query += ' RETURN t';
+      const result = await session.run(query, params);
+      return result.records.map((record) => record.get('t').properties);
+    } finally {
+      await session.close();
+    }
+  }
+
+  //!----------------------PLAYER--------------------------
   async savePlayer(
     username: string,
     password: string,
