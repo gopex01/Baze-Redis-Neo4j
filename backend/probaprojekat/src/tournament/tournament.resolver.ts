@@ -41,18 +41,9 @@ export class TournamentResolver {
       pretragaKrajnjaNagrada,
     );
   }
-  @Mutation(() => Boolean)
-  async signInPlayerOnTournament(
-    @Args('playerId') playerId: number,
-    @Args('tournamentId') tournamentId: number,
-  ) {
-    try {
-      return await this.neo4jService.signInPlayerOnTournament(
-        playerId,
-        tournamentId,
-      );
-    } catch {
-      return false;
-    }
+  @Query(()=>Tournament)
+  async getOneTournament(name:string)
+  {
+    return await this.neo4jService.getTournament(name);
   }
 }

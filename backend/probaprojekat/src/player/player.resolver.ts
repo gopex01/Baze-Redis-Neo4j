@@ -38,8 +38,8 @@ export class IgracResolver{
         
     }
     @Query(()=>Player)
-    async isPlayerRegisteredForTournament(turnirId:string,igracId:string)
+    async signInPlayerOnTournament(playerUsername: string, tournamentName: string)
     {
-        
+        return await this.neo4jService.signInPlayerOnTournament(playerUsername,tournamentName);
     }
 }

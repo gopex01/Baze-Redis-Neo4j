@@ -32,14 +32,9 @@ export class TournamentController {
       pretragaKrajnjaNagrada,
     );
   }
-  @Post('signInPlayerOnTournament/:playerId/:tournamentId')
-  async signInPlayerOnTournament(
-    @Param('playerId') playerId: number,
-    @Param('tournamentId') tournamentId: number,
-  ) {
-    return this.tournamentResolver.signInPlayerOnTournament(
-      playerId,
-      tournamentId,
-    );
+  @Get('getOneTournament/:name')
+  async getOneTournament(@Param('name') name:string)
+  {
+    return await this.tournamentResolver.getOneTournament(name);
   }
 }

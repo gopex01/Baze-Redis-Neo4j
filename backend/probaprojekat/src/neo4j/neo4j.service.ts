@@ -4,6 +4,7 @@ import { Driver, Session } from 'neo4j-driver';
 import neo4j from 'neo4j-driver';
 import { throwIfEmpty } from 'rxjs';
 import { Player } from 'src/player/player.entity';
+import { Tournament } from 'src/tournament/tournament.entity';
 
 @Injectable()
 export class Neo4jService {
@@ -98,6 +99,27 @@ export class Neo4jService {
       await session.close();
     }
   }
+  async getTournament(name:string)
+  {
+    const session:Session=this.driver.session();
+    try{
+      const result=await session.run(
+        'MATCH (n:TOURNAMENT) WHERE n.Name = $name RETURN n',
+        {name}
+      );
+      if(result.records.length>0)
+      {
+        const tournament=result.records[0].get('n').properties;
+        return tournament;
+      }
+      else{
+        return null;
+      }
+    }
+    finally{
+      await session.close();
+    }
+  }
 
   //!----------------------PLAYER--------------------------
   async savePlayer(
@@ -139,6 +161,7 @@ export class Neo4jService {
       );
       if (result.records.length > 0) {
         const player = result.records[0].get('n').properties;
+        console.log(result.records[0].get('n'));
         return player;
       } else {
         return null;
@@ -158,27 +181,6 @@ export class Neo4jService {
         (record) => record.get('n').properties,
       );
       return players;
-    } finally {
-      await session.close();
-    }
-  }
-  async getPlayerByIdentity(identity: number) {
-    const session: Session = this.driver.session();
-    try {
-      const query = `
-        MATCH (p)
-        WHERE ID(p) = $identity
-        RETURN p
-      `;
-
-      const result = await session.run(query, { identity });
-
-      if (result.records.length > 0) {
-        const player = result.records[0].get('p').properties;
-        return player;
-      } else {
-        throw new Error('Player not found');
-      }
     } finally {
       await session.close();
     }
@@ -206,40 +208,43 @@ export class Neo4jService {
       await session.close();
     }
   }
-  async close(): Promise<void> {
-    await this.driver.close();
+  async signInPlayerOnTournament(playerUsername: string, tournamentName: string) {
+   
+    const player=await this.getOnePlayer(playerUsername);
+    console.log(player);
+    const tournament=await this.getTournament(tournamentName);
+    console.log(tournament);
+    if(player && tournament)
+    {
+      tournament.Players=tournament.Players || [];
+      tournament.Players.push(player);
+      await this.updateTournament(tournament);
+    }
+    else{
+      throw new Error('Player or Tournament not found');
+    }
   }
-  async signInPlayerOnTournament(playerId: number, tournamentId: number) {
+  async updateTournament(tournament:Tournament)
+  {
     const session: Session = this.driver.session();
-    try {
-      // Upit za dodavanje igrača na turnir
-      const query = `
-      MATCH (p)
-      WHERE ID(p) = $playerId
-      MATCH (t)
-      WHERE ID(t)= $tournamentId
-      MERGE (p)-[:PARTICIPATED_IN]->(t)
-      RETURN p
-    `;
 
-      const addPlayerToTournamentQuery = `
-        MATCH (p:Player {identity: $playerId})
-        MATCH (t:Tournament {identity: $tournamentId})
-        MERGE (p)-[:PARTICIPATED_IN]->(t)
-        RETURN p, t
+    try {
+      const query = `
+        MATCH (t:TOURNAMENT {Name: $name})
+        SET t = $tournament
+        RETURN t
       `;
-      //console.log('ovo je igrac');
-      // const igrac = await this.getOnePlayer(tournamentId);
-      //console.log(igrac);
-      //console.log('ovo je bio igrac');
-      // Izvršavanje upita za dodavanje igrača na turnir
-      //const igrac=await this.getPlayerByIdentity(playerId);
-      const resultAddPlayer = await session.run(query, {
-        playerId,
-        tournamentId,
+
+      await session.run(query, {
+        name: tournament.Name,
+        tournament,
       });
     } finally {
       await session.close();
     }
   }
+  async close(): Promise<void> {
+    await this.driver.close();
+  }
+ 
 }

@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Param, Patch, Post } from "@nestjs/common";
 import { IgracResolver } from "./player.resolver";
 import {  Player } from "./player.entity";
+import { identity } from "rxjs";
 
 @Controller('player')
 export class PlayerController
@@ -33,5 +34,10 @@ export class PlayerController
     async changeData(@Param('idPlayer') idPlayer:string, @Body() newPlayer:Player)
     {
         return await this.igracResolver.changeData(idPlayer,newPlayer);
+    }
+    @Patch('signInPlayerOnTournament/:playerUsername/:tournamentName')
+    async signInPlayerOnTournament(@Param('playerUsername') playerUsername:string, @Param('tournamentName') tournamentName:string)
+    {
+        return await this.igracResolver.signInPlayerOnTournament(playerUsername,tournamentName);
     }
 }
