@@ -1,12 +1,24 @@
 export class Registration {
   Id: string;
-  Username: string;
-  Password: string;
+  TeamName: string;
+  NumberOfHeadphones: number;
+  NumberOfPCs: number;
+  NumberOfKeyboards: number;
+  NumberOfMouses: number;
 
-  constructor(username: string, password: string) {
+  constructor(
+    TeamName: string,
+    NumberOfHeadphones: number,
+    NumberOfPcs: number,
+    NumberOfKeyboards: number,
+    NumberOfMouses: number,
+  ) {
     this.Id = generateUniqueId(); // Generisanje jedinstvenog ID-a
-    this.Username = username;
-    this.Password = password;
+    this.TeamName = TeamName;
+    this.NumberOfHeadphones = NumberOfHeadphones;
+    this.NumberOfPCs = NumberOfPcs;
+    this.NumberOfKeyboards = NumberOfKeyboards;
+    this.NumberOfMouses = NumberOfMouses;
   }
 }
 

@@ -7,8 +7,11 @@ export class RegistrationService {
   constructor(private readonly redisService: RedisService) {}
   async createRegistration(registrationParam: Registration): Promise<void> {
     const registration = new Registration(
-      registrationParam.Username,
-      registrationParam.Password,
+      registrationParam.TeamName,
+      registrationParam.NumberOfHeadphones,
+      registrationParam.NumberOfPCs,
+      registrationParam.NumberOfKeyboards,
+      registrationParam.NumberOfMouses,
     );
     const key = `registration:${registration.Id}`;
     await this.redisService.set(key, JSON.stringify(registration));
