@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { TournamentResolver } from './tournament.resolver';
 import { Tournament } from './tournament.entity';
 
@@ -13,6 +13,7 @@ export class TournamentController {
   async addTournament(@Body() tournament: Tournament) {
     return this.tournamentResolver.addTournament(tournament);
   }
+  //parametri u get
   @Get('filterTournaments')
   async filterTournaments(
     pretragaNaziv: string | undefined,
@@ -29,6 +30,16 @@ export class TournamentController {
       pretragaKrajnjiDatum,
       pretragaPocetnaNagrada,
       pretragaKrajnjaNagrada,
+    );
+  }
+  @Post('signInPlayerOnTournament/:playerId/:tournamentId')
+  async signInPlayerOnTournament(
+    @Param('playerId') playerId: number,
+    @Param('tournamentId') tournamentId: number,
+  ) {
+    return this.tournamentResolver.signInPlayerOnTournament(
+      playerId,
+      tournamentId,
     );
   }
 }

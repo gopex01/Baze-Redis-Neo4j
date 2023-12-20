@@ -1,4 +1,4 @@
-import { Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Tournament } from './tournament.entity';
 import { Neo4jService } from 'src/neo4j/neo4j.service';
 
@@ -40,5 +40,19 @@ export class TournamentResolver {
       pretragaPocetnaNagrada,
       pretragaKrajnjaNagrada,
     );
+  }
+  @Mutation(() => Boolean)
+  async signInPlayerOnTournament(
+    @Args('playerId') playerId: number,
+    @Args('tournamentId') tournamentId: number,
+  ) {
+    try {
+      return await this.neo4jService.signInPlayerOnTournament(
+        playerId,
+        tournamentId,
+      );
+    } catch {
+      return false;
+    }
   }
 }

@@ -162,6 +162,27 @@ export class Neo4jService {
       await session.close();
     }
   }
+  async getPlayerByIdentity(identity: number) {
+    const session: Session = this.driver.session();
+    try {
+      const query = `
+        MATCH (p)
+        WHERE ID(p) = $identity
+        RETURN p
+      `;
+
+      const result = await session.run(query, { identity });
+
+      if (result.records.length > 0) {
+        const player = result.records[0].get('p').properties;
+        return player;
+      } else {
+        throw new Error('Player not found');
+      }
+    } finally {
+      await session.close();
+    }
+  }
   async changeData(
     idPlayer: string,
     username: string,
@@ -187,5 +208,38 @@ export class Neo4jService {
   }
   async close(): Promise<void> {
     await this.driver.close();
+  }
+  async signInPlayerOnTournament(playerId: number, tournamentId: number) {
+    const session: Session = this.driver.session();
+    try {
+      // Upit za dodavanje igrača na turnir
+      const query = `
+      MATCH (p)
+      WHERE ID(p) = $playerId
+      MATCH (t)
+      WHERE ID(t)= $tournamentId
+      MERGE (p)-[:PARTICIPATED_IN]->(t)
+      RETURN p
+    `;
+
+      const addPlayerToTournamentQuery = `
+        MATCH (p:Player {identity: $playerId})
+        MATCH (t:Tournament {identity: $tournamentId})
+        MERGE (p)-[:PARTICIPATED_IN]->(t)
+        RETURN p, t
+      `;
+      //console.log('ovo je igrac');
+      // const igrac = await this.getOnePlayer(tournamentId);
+      //console.log(igrac);
+      //console.log('ovo je bio igrac');
+      // Izvršavanje upita za dodavanje igrača na turnir
+      //const igrac=await this.getPlayerByIdentity(playerId);
+      const resultAddPlayer = await session.run(query, {
+        playerId,
+        tournamentId,
+      });
+    } finally {
+      await session.close();
+    }
   }
 }

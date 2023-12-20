@@ -1,5 +1,6 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { FieldNotInSchema } from 'redis-om';
+import { Player } from 'src/player/player.entity';
 
 @ObjectType()
 export class Tournament {
@@ -17,4 +18,6 @@ export class Tournament {
   NumberOfTeamsNow: number;
   @Field()
   Price: number;
+  @Field(() => [Player], { nullable: true })
+  Players?: Player[];
 }
