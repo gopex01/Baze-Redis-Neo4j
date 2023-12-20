@@ -21,4 +21,25 @@ export class IgracResolver{
     {
         return await this.neo4jService.getAllPlayers();
     }
+    @Query(()=>Player)
+    async getOnePlayer(username:string)
+    {
+        return await this.neo4jService.getOnePlayer(username);
+    }
+    @Query(()=>Player)
+    async getPlayersWithSimilarUsername(username:string)
+    {
+        return await this.neo4jService.getPlayersWithSimilarUsername(username);
+    }
+    @Query(()=>Player)
+    async changeData(idPlayer:string, newPlayer:Player)
+    {
+        return await this.neo4jService.changeData(idPlayer,newPlayer.Username,newPlayer.Password,newPlayer.NameAndSurname,newPlayer.TeamLeader);
+        
+    }
+    @Query(()=>Player)
+    async isPlayerRegisteredForTournament(turnirId:string,igracId:string)
+    {
+        
+    }
 }

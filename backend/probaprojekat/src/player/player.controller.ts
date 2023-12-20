@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from "@nestjs/common";
+import { Body, Controller, Get, Param, Patch, Post } from "@nestjs/common";
 import { IgracResolver } from "./player.resolver";
 import {  Player } from "./player.entity";
 
@@ -18,5 +18,20 @@ export class PlayerController
     async getAllPlayers()
     {
         return this.igracResolver.getAllPlayers();
+    }
+    @Get('getOnePlayer/:username')
+    async getOnePlayer(@Param('username') username:string)
+    {
+        return this.igracResolver.getOnePlayer(username);
+    }
+    @Get('getSimilarPlayers/:username')
+    async getPlayersWithSimilarUsername(@Param('username') username:string)
+    {
+        return this.igracResolver.getPlayersWithSimilarUsername(username);
+    }
+    @Patch('changeData/:idPlayer')
+    async changeData(@Param('idPlayer') idPlayer:string, @Body() newPlayer:Player)
+    {
+        return await this.igracResolver.changeData(idPlayer,newPlayer);
     }
 }
