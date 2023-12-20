@@ -11,6 +11,7 @@ import { IgracResolver } from './player/player.resolver';
 import { Neo4jService } from './neo4j/neo4j.service';
 import { PlayerModule } from './player/player.module';
 import { TournamentModule } from './tournament/tournament.module';
+import { RegistrationModule } from './registration/registration.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { TournamentModule } from './tournament/tournament.module';
     AlbumModule,
     PlayerModule,
     TournamentModule,
+    RegistrationModule,
   ],
   controllers: [AppController],
   providers: [AppService, RedisClientService, Neo4jService],
