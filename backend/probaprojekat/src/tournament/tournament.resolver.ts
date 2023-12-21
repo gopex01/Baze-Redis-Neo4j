@@ -1,10 +1,19 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Tournament } from './tournament.entity';
 import { Neo4jService } from 'src/neo4j/neo4j.service';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Inject } from '@nestjs/common';
+import { Cache } from 'cache-manager';
+import { RedisService } from 'src/redis-client/redis.service';
 
 @Resolver(() => Tournament)
 export class TournamentResolver {
-  constructor(private readonly neo4jService: Neo4jService) {}
+  constructor(private readonly neo4jService: Neo4jService,
+    //@Inject(CACHE_MANAGER) private cacheService:Cache) 
+    private readonly redisService:RedisService)
+  {
+
+  }
   @Query(() => Tournament)
   async allTournaments() {
     return await this.neo4jService.allTournaments();
@@ -40,6 +49,34 @@ export class TournamentResolver {
       pretragaPocetnaNagrada,
       pretragaKrajnjaNagrada,
     );
+  }
+  @Query(()=>Tournament)
+  async getTournamentById(tournamentId:string)
+  {
+    const cachedData = await this.redisService.getClient().get(tournamentId);
+
+    if (cachedData) {
+      console.log("DATA FROM CACHE   ", cachedData);
+      return JSON.parse(cachedData);
+    }
+
+    const data = await this.neo4jService.getTournamentById(tournamentId);
+
+    // Postavljanje vrednosti u keš sa vremenom života od 30 sekundi
+    await this.redisService.getClient().set(tournamentId, JSON.stringify(data), 'ex', 30);
+
+    console.log('Data set to Redis cache', data);
+    return data;
+    /*const cachedData=await this.cacheService.get(tournamentId);
+    if(cachedData)
+    {
+      console.log("DATA FROM CACHE   ",cachedData);
+      return cachedData;
+    }
+    const data=await this.neo4jService.getTournamentById(tournamentId);
+    await this.cacheService.set(tournamentId,data);
+    console.log('Data set to cache',data);
+    return await data;*/
   }
   @Query(()=>Tournament)
   async getOneTournament(name:string)

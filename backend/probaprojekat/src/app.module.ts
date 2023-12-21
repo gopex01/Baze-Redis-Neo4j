@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { config, validationSchema } from '../config';
 import { RedisClientModule } from './redis-client/redis-client.module';
 import { AlbumModule } from './album/album.module';
@@ -12,6 +12,9 @@ import { Neo4jService } from './neo4j/neo4j.service';
 import { PlayerModule } from './player/player.module';
 import { TournamentModule } from './tournament/tournament.module';
 import { RegistrationModule } from './registration/registration.module';
+import { CacheModule } from '@nestjs/cache-manager';
+import { redisStore } from 'cache-manager-redis-store';
+import { RedisClientOptions } from 'redis';
 
 @Module({
   imports: [
@@ -27,6 +30,7 @@ import { RegistrationModule } from './registration/registration.module';
       username: 'neo4j',
       password: 'neo',
     }),
+    CacheModule.register({isGlobal:true}),
     RedisClientModule,
     AlbumModule,
     PlayerModule,

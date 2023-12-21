@@ -1,4 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';;
+import * as redisStore from 'cache-manager-redis-store';
+import * as cacheManager from 'cache-manager';
 import Redis from 'ioredis';
 @Injectable()
 export class RedisService {

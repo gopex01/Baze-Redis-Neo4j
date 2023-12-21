@@ -12,4 +12,6 @@ export class Player {
   NameAndSurname: string;
   @Field()
   TeamLeader: boolean;
+  @Field(()=>[Tournament], {nullable:true})
+  ListOfTournaments?:Tournament[];
 }

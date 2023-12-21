@@ -18,4 +18,6 @@ export class Tournament {
   NumberOfTeamsNow: number;
   @Field()
   Price: number;
+  @Field(()=>[Player], {nullable:true})
+  ListOfPlayers?:Player[];
 }

@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, CacheTTL, Controller, Get, Param, Post, UseInterceptors } from '@nestjs/common';
 import { TournamentResolver } from './tournament.resolver';
 import { Tournament } from './tournament.entity';
+import { CacheInterceptor } from '@nestjs/cache-manager';
 
 @Controller('Tournament')
 export class TournamentController {
@@ -36,5 +37,13 @@ export class TournamentController {
   async getOneTournament(@Param('name') name:string)
   {
     return await this.tournamentResolver.getOneTournament(name);
+  }
+
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
+  @Get('getTournamentById/:tournamentId')
+  async getTournamentById(@Param('tournamentId') tournamentId:string)
+  {
+    return await this.tournamentResolver.getTournamentById(tournamentId);
   }
 }

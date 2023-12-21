@@ -5,7 +5,7 @@ export class Registration {
   NumberOfPCs: number;
   NumberOfKeyboards: number;
   NumberOfMouses: number;
-  PlayerUsername:string;
+  PlayerId:string;
 
   constructor(
     TeamName: string,
@@ -13,7 +13,7 @@ export class Registration {
     NumberOfPcs: number,
     NumberOfKeyboards: number,
     NumberOfMouses: number,
-    PlayerUsername:string
+    PlayerId:string
   ) {
     this.Id = generateUniqueId(); // Generisanje jedinstvenog ID-a
     this.TeamName = TeamName;
@@ -21,7 +21,7 @@ export class Registration {
     this.NumberOfPCs = NumberOfPcs;
     this.NumberOfKeyboards = NumberOfKeyboards;
     this.NumberOfMouses = NumberOfMouses;
-    this.PlayerUsername=PlayerUsername;
+    this.PlayerId=PlayerId;
   }
 }
 

@@ -35,6 +35,11 @@ export class PlayerController
     {
         return await this.igracResolver.changeData(idPlayer,newPlayer);
     }
+    @Get('getPlayerById/:playerId')
+    async getPlayerById(@Param('playerId') playerId:string)
+    {
+        return await this.igracResolver.getPlayerById(playerId);
+    }
     @Patch('signInPlayerOnTournament/:playerUsername/:tournamentName')
     async signInPlayerOnTournament(@Param('playerUsername') playerUsername:string, @Param('tournamentName') tournamentName:string)
     {

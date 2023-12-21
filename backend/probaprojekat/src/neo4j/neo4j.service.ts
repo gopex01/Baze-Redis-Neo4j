@@ -120,6 +120,30 @@ export class Neo4jService {
       await session.close();
     }
   }
+  async getTournamentById(tournamentId:string)
+  {
+    const session:Session=this.driver.session();
+    try{
+      const result=await session.run(
+        'MATCH (t) WHERE ID(t) = toInteger($tournamentId) RETURN t',
+        {tournamentId}
+      );
+      const record=result.records[0];
+      if(record)
+      {
+        const node=record.get('t').properties;
+        return node;
+      }
+      else{
+        return {
+          message:'ne postoji'
+        }
+      }
+    }
+    finally{
+      await session.close();
+    }
+  }
 
   //!----------------------PLAYER--------------------------
   async savePlayer(
@@ -205,6 +229,31 @@ export class Neo4jService {
         return null;
       }
     } finally {
+      await session.close();
+    }
+  }
+  async getPlayerById(idPlayer:string)
+  {
+    const session:Session=this.driver.session();
+    try{
+      const result=await session.run(
+        'MATCH (n) WHERE ID(n) = toInteger($idPlayer) RETURN n',
+        {idPlayer}
+      );
+      const record=result.records[0];
+      if(record)
+      {
+        const node=record.get('n');
+        return node;
+      }
+      else{
+        return{
+        message:'ne postoji'
+        }
+      }
+
+    }
+    finally{
       await session.close();
     }
   }
