@@ -33,6 +33,8 @@ export class TournamentController {
       pretragaKrajnjaNagrada,
     );
   }
+  @UseInterceptors(CacheInterceptor)
+  @CacheTTL(30)
   @Get('getOneTournament/:name')
   async getOneTournament(@Param('name') name:string)
   {
