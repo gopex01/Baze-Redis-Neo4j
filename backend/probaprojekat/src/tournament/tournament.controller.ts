@@ -1,4 +1,12 @@
-import { Body, CacheTTL, Controller, Get, Param, Post, UseInterceptors } from '@nestjs/common';
+import {
+  Body,
+  CacheTTL,
+  Controller,
+  Get,
+  Param,
+  Post,
+  UseInterceptors,
+} from '@nestjs/common';
 import { TournamentResolver } from './tournament.resolver';
 import { Tournament } from './tournament.entity';
 import { CacheInterceptor } from '@nestjs/cache-manager';
@@ -14,15 +22,21 @@ export class TournamentController {
   async addTournament(@Body() tournament: Tournament) {
     return this.tournamentResolver.addTournament(tournament);
   }
-  //parametri u get
-  @Get('filterTournaments')
+  //!NE RADI
+  @Get(
+    'filterTournaments/:pretragaNaziv/:pretragaMesto/:pretragaPocetniDatum/:pretragaKrajnjiDatum/:pretragaPocetnaNagrada/:pretragaKrajnjaNagrada',
+  )
   async filterTournaments(
-    pretragaNaziv: string | undefined,
-    pretragaMesto: string | undefined,
-    pretragaPocetniDatum: string | undefined,
-    pretragaKrajnjiDatum: string | undefined,
-    pretragaPocetnaNagrada: number | undefined,
-    pretragaKrajnjaNagrada: number | undefined,
+    @Param('pretragaNaziv') pretragaNaziv: string | undefined = '',
+    @Param('pretragaMesto') pretragaMesto: string | undefined = '',
+    @Param('pretragaPocetniDatum')
+    pretragaPocetniDatum: string | undefined = '',
+    @Param('pretragaKrajnjiDatum')
+    pretragaKrajnjiDatum: string | undefined = '',
+    @Param('pretragaPocetnaNagrada')
+    pretragaPocetnaNagrada: number | undefined = 0,
+    @Param('pretragaKrajnjaNagrada')
+    pretragaKrajnjaNagrada: number | undefined = 0,
   ) {
     return this.tournamentResolver.filterTournaments(
       pretragaNaziv,
@@ -36,16 +50,18 @@ export class TournamentController {
   @UseInterceptors(CacheInterceptor)
   @CacheTTL(30)
   @Get('getOneTournament/:name')
-  async getOneTournament(@Param('name') name:string)
-  {
+  async getOneTournament(@Param('name') name: string) {
     return await this.tournamentResolver.getOneTournament(name);
   }
 
   @UseInterceptors(CacheInterceptor)
   @CacheTTL(30)
   @Get('getTournamentById/:tournamentId')
-  async getTournamentById(@Param('tournamentId') tournamentId:string)
-  {
+  async getTournamentById(@Param('tournamentId') tournamentId: string) {
     return await this.tournamentResolver.getTournamentById(tournamentId);
+  }
+  @Get('playersOnTournament/:tournamentName')
+  async playersOnTournament(@Param('tournamentName') tournamentName: string) {
+    return await this.tournamentResolver.playersOnTournament(tournamentName);
   }
 }

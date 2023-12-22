@@ -246,14 +246,11 @@ export class Neo4jService {
       await session.close();
     }
   }
-  async signInPlayerOnTournament(
-    playerUsername: string,
-    tournamentName: string,
-  ) {
+  async signInPlayerOnTournament(playerUsername: string, tournamentId: string) {
     const session: Session = this.driver.session();
     const player = await this.getOnePlayer(playerUsername);
     console.log(player);
-    const tournament = await this.getTournament(tournamentName);
+    const tournament = await this.getTournament(tournamentId);
     console.log(tournament);
     //if (player && tournament) {
     //   return 'pronadjeni su';
@@ -265,10 +262,13 @@ export class Neo4jService {
     // }
     const query = `
       MATCH (p:Player {username: $playerUsername})
-      MATCH (t:TOURNAMENT) WHERE t.name = $tournamentName
+      MATCH (t) WHERE ID(t) = toInteger($tournamentId)
       MERGE (p)-[:UCESTVUJE_NA]->(t)
     `;
-    const result = await session.run(query, { playerUsername, tournamentName });
+    const result = await session.run(query, {
+      playerUsername,
+      tournamentId,
+    });
   }
   async updateTournament(tournament: Tournament) {
     const session: Session = this.driver.session();
@@ -298,5 +298,26 @@ export class Neo4jService {
     const result = await session.run(query, { playerUsername });
     const turniri = result.records.map((record) => record.get('t').properties);
     return turniri;
+  }
+  async playersOnTournament(tournamentName: string) {
+    const session = this.driver.session();
+    //const query = `MATCH (p:Player)-[:UCESTVUJE_NA]->(MATCH ((t) WHERE ID(t) = toInteger($tournamentName)) RETURN p`;
+    const query = `
+    MATCH (p:Player)-[:UCESTVUJE_NA]->(t:TOURNAMENT {name:$tournamentName})
+    RETURN p
+  `;
+    const result = await session.run(query, { tournamentName });
+    const igraci = result.records.map((record) => record.get('p').properties);
+    return igraci;
+  }
+  async getTeammates(playerId: string, tournamentName: string) {
+    const session = await this.driver.session();
+    const query = `MATCH (p:Player)-[:UCESTVUJE_NA]->(t:TOURNAMENT {name:$tournamentName})
+    WHERE NOT ID(p)=toInteger($playerId)
+    RETURN p
+    `;
+    const result = await session.run(query, { playerId, tournamentName });
+    const igraci = result.records.map((record) => record.get('p').properties);
+    return igraci;
   }
 }

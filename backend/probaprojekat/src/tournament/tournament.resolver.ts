@@ -97,4 +97,8 @@ export class TournamentResolver {
     console.log('Data set to Redis cache', data);
     return data;
   }
+  @Query(() => Tournament)
+  async playersOnTournament(tournamentName: string) {
+    return this.neo4jService.playersOnTournament(tournamentName);
+  }
 }
