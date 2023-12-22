@@ -121,6 +121,7 @@ export class Neo4jService {
       await session.close();
     }
   }
+
   async getTournamentById(tournamentId: string) {
     const session: Session = this.driver.session();
     try {
@@ -183,8 +184,13 @@ export class Neo4jService {
       );
       if (result.records.length > 0) {
         const player = result.records[0].get('n').properties;
+        const id = result.records[0].get('n').identity.toString();
         console.log(result.records[0].get('n'));
-        return player;
+        const playerWithNeo4jId = {
+          ...player,
+          id,
+        };
+        return playerWithNeo4jId;
       } else {
         return null;
       }
@@ -256,10 +262,11 @@ export class Neo4jService {
     tournamentId: string,
   ) {
     const session: Session = this.driver.session();
-    // const player = await this.getOnePlayer(playerUsername);
-    // console.log(player);
-    // const tournament = await this.getTournament(tournamentId);
-    // console.log(tournament);
+    const player = await this.getOnePlayer(playerUsername);
+    const tournament = await this.getTournamentById(tournamentId);
+    if (!player || !tournament) {
+      return null;
+    }
     const query = `
       MATCH (p:Player {username: $playerUsername})
       MATCH (t) WHERE ID(t) = toInteger($tournamentId)
@@ -271,11 +278,12 @@ export class Neo4jService {
     });
     const message: MessageEntity = new MessageEntity(
       'prijavljeni ste na turnir',
-      '21:12',
       'delivered',
-      '0',
-      '2',
     );
+    message.playerId = player.id;
+    message.tournamentId = tournamentId;
+    console.log('id playera je' + player.id);
+    console.log(message);
     await this.messageService.createMessage(message);
   }
   async updateTournament(tournament: Tournament) {

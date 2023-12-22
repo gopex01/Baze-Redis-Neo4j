@@ -6,13 +6,7 @@ import { Injectable } from '@nestjs/common';
 export class MessageService {
   constructor(private readonly redisService: RedisService) {}
   async createMessage(newMessage: MessageEntity) {
-    const message = new MessageEntity(
-      newMessage.messageText,
-      newMessage.time,
-      newMessage.status,
-      newMessage.playerId,
-      newMessage.tournamentId,
-    );
+    const message = new MessageEntity(newMessage.messageText, newMessage.time);
     const key = `message:${message.id}`;
     await this.redisService.set(key, JSON.stringify(newMessage), 5 * 60); //5 min po 60s
   }

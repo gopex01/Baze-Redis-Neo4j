@@ -5,21 +5,23 @@ export class MessageEntity {
   status: string; // Može biti enum sa različitim statusima
   playerId: string; // ID igrača
   tournamentId: string; // ID turnira
-  constructor(
-    messageText: string,
-    timestamp: string,
-    status: string,
-    playerId: string,
-    tournamentId: string,
-  ) {
+  constructor(messageText: string, status: string) {
     this.id = generateUniqueId();
     this.messageText = messageText;
-    this.time = timestamp;
+    this.time = getCurrentTime();
     this.status = status;
-    this.playerId = playerId;
-    this.tournamentId = tournamentId;
+    //idijevi se postavljaju tamo gde se poziva
   }
 }
 function generateUniqueId(): string {
   return Date.now().toString();
+}
+function getCurrentTime(): string {
+  const currentTime = new Date();
+  const timeWithoutSeconds = currentTime.toLocaleTimeString([], {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+
+  return timeWithoutSeconds;
 }
