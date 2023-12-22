@@ -5,19 +5,21 @@ import { Player } from 'src/player/player.entity';
 @ObjectType()
 export class Tournament {
   @Field(() => ID)
-  Id: string;
+  id: string;
   @Field()
-  Name: string;
+  name: string;
   @Field()
-  Date: string;
+  date: string;
   @Field()
-  Place: string;
+  place: string;
   @Field()
-  NumberOfTeamsMax: number;
+  numberOfTeamsMax: number;
   @Field()
-  NumberOfTeamsNow: number;
+  numberOfTeamsNow: number;
   @Field()
-  Price: number;
-  @Field(()=>[Player], {nullable:true})
-  ListOfPlayers?:Player[];
+  price: number;
+  // @Field(()=>[Player], {nullable:true})
+  // ListOfPlayers?:Player[];
+  @Field(() => [ID]) // Polje koje će čuvati ID-ove turnira
+  playersIds: string[]; // Niz ID-ova turnira koje igrač igra
 }

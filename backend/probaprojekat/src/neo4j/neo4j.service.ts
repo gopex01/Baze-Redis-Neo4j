@@ -43,7 +43,7 @@ export class Neo4jService {
     const session: Session = this.driver.session();
     try {
       const result = await session.run(
-        'CREATE (n:TOURNAMENT {Name:$name,Date:$date,Place:$place,NumberOfTeamsMax:$numberOfTeamsMax,NumberOfTeamsNow:$numberOfTeamsNow,Price:$price}) RETURN n',
+        'CREATE (n:TOURNAMENT {name:$name,date:$date,place:$place,numberOfTeamsMax:$numberOfTeamsMax,numberOfTeamsNow:$numberOfTeamsNow,price:$price}) RETURN n',
         { name, date, place, numberOfTeamsMax, numberOfTeamsNow, price },
       );
       console.log(result.records);
@@ -69,26 +69,26 @@ export class Neo4jService {
       const params: { [key: string]: any } = {};
 
       if (pretragaNaziv) {
-        query += ' AND t.Name CONTAINS $pretragaNaziv';
+        query += ' AND t.name CONTAINS $pretragaNaziv';
         params.pretragaNaziv = pretragaNaziv;
       }
 
       if (pretragaMesto) {
-        query += ' AND t.Place CONTAINS $pretragaMesto';
+        query += ' AND t.place CONTAINS $pretragaMesto';
         params.pretragaMesto = pretragaMesto;
       }
 
       // Ovo je primjer za filtriranje prema datumima, potrebno je prilagoditi zahtjevima vaše baze podataka
       if (pretragaPocetniDatum && pretragaKrajnjiDatum) {
         query +=
-          ' AND t.Date >= $pretragaPocetniDatum AND t.Date <= $pretragaKrajnjiDatum';
+          ' AND t.date >= $pretragaPocetniDatum AND t.date <= $pretragaKrajnjiDatum';
         params.pretragaPocetniDatum = pretragaPocetniDatum;
         params.pretragaKrajnjiDatum = pretragaKrajnjiDatum;
       }
 
       if (pretragaPocetnaNagrada && pretragaKrajnjaNagrada) {
         query +=
-          ' AND t.Price >= $pretragaPocetnaNagrada AND t.Price <= $pretragaKrajnjaNagrada';
+          ' AND t.price >= $pretragaPocetnaNagrada AND t.price <= $pretragaKrajnjaNagrada';
         params.pretragaPocetnaNagrada = pretragaPocetnaNagrada;
         params.pretragaKrajnjaNagrada = pretragaKrajnjaNagrada;
       }
@@ -99,64 +99,57 @@ export class Neo4jService {
       await session.close();
     }
   }
-  async getTournament(name:string)
-  {
-    const session:Session=this.driver.session();
-    try{
-      const result=await session.run(
-        'MATCH (n:TOURNAMENT) WHERE n.Name = $name RETURN n',
-        {name}
+  async getTournament(name: string) {
+    const session: Session = this.driver.session();
+    try {
+      const result = await session.run(
+        'MATCH (n:TOURNAMENT) WHERE n.name = $name RETURN n',
+        { name },
       );
-      if(result.records.length>0)
-      {
-        const tournament=result.records[0].get('n').properties;
+      if (result.records.length > 0) {
+        const tournament = result.records[0].get('n').properties;
         return tournament;
-      }
-      else{
+      } else {
         return null;
       }
-    }
-    finally{
+    } finally {
       await session.close();
     }
   }
-  async getTournamentById(tournamentId:string)
-  {
-    const session:Session=this.driver.session();
-    try{
-      const result=await session.run(
+  async getTournamentById(tournamentId: string) {
+    const session: Session = this.driver.session();
+    try {
+      const result = await session.run(
         'MATCH (t) WHERE ID(t) = toInteger($tournamentId) RETURN t',
-        {tournamentId}
+        { tournamentId },
       );
-      const record=result.records[0];
-      if(record)
-      {
-        const node=record.get('t').properties;
+      const record = result.records[0];
+      if (record) {
+        const node = record.get('t').properties;
         return node;
-      }
-      else{
+      } else {
         return {
-          message:'ne postoji'
-        }
+          message: 'ne postoji',
+        };
       }
-    }
-    finally{
+    } finally {
       await session.close();
     }
   }
 
   //!----------------------PLAYER--------------------------
   async savePlayer(
-    username: string,
-    password: string,
-    NameAndSurname: string,
+    Username: string,
+    Password: string,
+    Name: string,
+    Surname: string,
     TeamLeader: boolean,
   ): Promise<void> {
     const session: Session = this.driver.session();
     try {
       const result = await session.run(
-        'CREATE (n:Player {Username:$username, Password:$password, NameAndSurname:$NameAndSurname, TeamLeader:$TeamLeader}) RETURN n',
-        { username, password, NameAndSurname, TeamLeader },
+        'CREATE (n:Player {username:$Username, password:$Password, name:$Name, surname:$Surname,teamLeader:$TeamLeader}) RETURN n',
+        { Username, Password, Name, Surname, TeamLeader },
       );
       console.log(result.records);
     } finally {
@@ -180,7 +173,7 @@ export class Neo4jService {
     const session: Session = this.driver.session();
     try {
       const result = await session.run(
-        'MATCH (n:Player {Username: $username}) RETURN n ',
+        'MATCH (n:Player {username: $username}) RETURN n ',
         { username },
       );
       if (result.records.length > 0) {
@@ -198,7 +191,7 @@ export class Neo4jService {
     const session: Session = this.driver.session();
     try {
       const result = await session.run(
-        'MATCH (n:Player) WHERE n.Username CONTAINS $username RETURN n',
+        'MATCH (n:Player) WHERE n.username CONTAINS $username RETURN n',
         { username },
       );
       const players = result.records.map(
@@ -210,17 +203,18 @@ export class Neo4jService {
     }
   }
   async changeData(
-    idPlayer: string,
-    username: string,
-    password: string,
-    NameAndSurname: string,
+    IdPlayer: string,
+    Username: string,
+    Password: string,
+    Name: string,
+    Surname: string,
     TeamLeader: boolean,
   ) {
     const session: Session = this.driver.session();
     try {
       const result = await session.run(
-        'MATCH (n:Player {Id: $idPlayer}) SET n.Username=$username, n.Password=$password, n.NameAndSurname=$NameAndSurname, n.TeamLeader=$TeamLeader RETURN n',
-        { idPlayer, username, password, NameAndSurname, TeamLeader },
+        'MATCH (n:Player {id: $idPlayer}) SET n.username=$Username, n.password=$Password, n.name=$Name,n.surname=$Surname, n.teamLeader=$TeamLeader RETURN n',
+        { IdPlayer, Username, Password, Name, Surname, TeamLeader },
       );
       if (result.records.length > 0) {
         const updatedPlayer = result.records[0].get('n').properties;
@@ -232,60 +226,62 @@ export class Neo4jService {
       await session.close();
     }
   }
-  async getPlayerById(idPlayer:string)
-  {
-    const session:Session=this.driver.session();
-    try{
-      const result=await session.run(
+  async getPlayerById(idPlayer: string) {
+    const session: Session = this.driver.session();
+    try {
+      const result = await session.run(
         'MATCH (n) WHERE ID(n) = toInteger($idPlayer) RETURN n',
-        {idPlayer}
+        { idPlayer },
       );
-      const record=result.records[0];
-      if(record)
-      {
-        const node=record.get('n');
+      const record = result.records[0];
+      if (record) {
+        const node = record.get('n');
         return node;
+      } else {
+        return {
+          message: 'ne postoji',
+        };
       }
-      else{
-        return{
-        message:'ne postoji'
-        }
-      }
-
-    }
-    finally{
+    } finally {
       await session.close();
     }
   }
-  async signInPlayerOnTournament(playerUsername: string, tournamentName: string) {
-   
-    const player=await this.getOnePlayer(playerUsername);
+  async signInPlayerOnTournament(
+    playerUsername: string,
+    tournamentName: string,
+  ) {
+    const session: Session = this.driver.session();
+    const player = await this.getOnePlayer(playerUsername);
     console.log(player);
-    const tournament=await this.getTournament(tournamentName);
+    const tournament = await this.getTournament(tournamentName);
     console.log(tournament);
-    if(player && tournament)
-    {
-      tournament.Players=tournament.Players || [];
-      tournament.Players.push(player);
-      await this.updateTournament(tournament);
-    }
-    else{
-      throw new Error('Player or Tournament not found');
-    }
+    //if (player && tournament) {
+    //   return 'pronadjeni su';
+    //tournament.Players = tournament.Players || [];
+    //tournament.Players.push(player);
+    //await this.updateTournament(tournament);
+    //} else {
+    //   throw new Error('Player or Tournament not found');
+    // }
+    const query = `
+      MATCH (p:Player {username: $playerUsername})
+      MATCH (t:TOURNAMENT) WHERE t.name = $tournamentName
+      MERGE (p)-[:UCESTVUJE_NA]->(t)
+    `;
+    const result = await session.run(query, { playerUsername, tournamentName });
   }
-  async updateTournament(tournament:Tournament)
-  {
+  async updateTournament(tournament: Tournament) {
     const session: Session = this.driver.session();
 
     try {
       const query = `
-        MATCH (t:TOURNAMENT {Name: $name})
+        MATCH (t:TOURNAMENT {name: $name})
         SET t = $tournament
         RETURN t
       `;
 
       await session.run(query, {
-        name: tournament.Name,
+        name: tournament.name,
         tournament,
       });
     } finally {
@@ -295,5 +291,12 @@ export class Neo4jService {
   async close(): Promise<void> {
     await this.driver.close();
   }
- 
+  async playerTournaments(playerUsername: string) {
+    const session: Session = this.driver.session();
+    const query = `MATCH (p:Player {username: $playerUsername})-[:UCESTVUJE_NA]->(t:TOURNAMENT)
+    RETURN t`;
+    const result = await session.run(query, { playerUsername });
+    const turniri = result.records.map((record) => record.get('t').properties);
+    return turniri;
+  }
 }

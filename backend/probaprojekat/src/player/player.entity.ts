@@ -1,17 +1,24 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql';
-import { Tournament } from 'src/tournament/tournament.entity';
+
 @ObjectType()
 export class Player {
   @Field(() => ID)
-  Id: string;
+  id: string;
+
   @Field()
-  Username: string;
+  username: string;
+
   @Field()
-  Password: string;
+  password: string;
+
   @Field()
-  NameAndSurname: string;
+  name: string;
   @Field()
-  TeamLeader: boolean;
-  @Field(()=>[Tournament], {nullable:true})
-  ListOfTournaments?:Tournament[];
+  surname: string;
+
+  @Field()
+  teamLeader: boolean;
+
+  @Field(() => [ID]) // Polje koje će čuvati ID-ove turnira
+  tournamentsIds: string[]; // Niz ID-ova turnira koje igrač igra
 }

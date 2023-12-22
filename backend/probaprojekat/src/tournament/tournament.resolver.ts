@@ -8,12 +8,11 @@ import { RedisService } from 'src/redis-client/redis.service';
 
 @Resolver(() => Tournament)
 export class TournamentResolver {
-  constructor(private readonly neo4jService: Neo4jService,
-    //@Inject(CACHE_MANAGER) private cacheService:Cache) 
-    private readonly redisService:RedisService)
-  {
-
-  }
+  constructor(
+    private readonly neo4jService: Neo4jService,
+    //@Inject(CACHE_MANAGER) private cacheService:Cache)
+    private readonly redisService: RedisService,
+  ) {}
   @Query(() => Tournament)
   async allTournaments() {
     return await this.neo4jService.allTournaments();
@@ -21,12 +20,12 @@ export class TournamentResolver {
   @Query(() => Tournament)
   async addTournament(input: Tournament) {
     await this.neo4jService.addTournament(
-      input.Name,
-      input.Date,
-      input.Place,
-      input.NumberOfTeamsMax,
-      input.NumberOfTeamsNow,
-      input.Price,
+      input.name,
+      input.date,
+      input.place,
+      input.numberOfTeamsMax,
+      input.numberOfTeamsNow,
+      input.price,
     );
     return {
       message: 'success',
@@ -50,20 +49,21 @@ export class TournamentResolver {
       pretragaKrajnjaNagrada,
     );
   }
-  @Query(()=>Tournament)
-  async getTournamentById(tournamentId:string)
-  {
+  @Query(() => Tournament)
+  async getTournamentById(tournamentId: string) {
     const cachedData = await this.redisService.getClient().get(tournamentId);
 
     if (cachedData) {
-      console.log("DATA FROM CACHE   ", cachedData);
+      console.log('DATA FROM CACHE   ', cachedData);
       return JSON.parse(cachedData);
     }
 
     const data = await this.neo4jService.getTournamentById(tournamentId);
 
     // Postavljanje vrednosti u keš sa vremenom života od 30 sekundi
-    await this.redisService.getClient().set(tournamentId, JSON.stringify(data), 'ex', 30);
+    await this.redisService
+      .getClient()
+      .set(tournamentId, JSON.stringify(data), 'ex', 30);
 
     console.log('Data set to Redis cache', data);
     return data;
@@ -78,20 +78,21 @@ export class TournamentResolver {
     console.log('Data set to cache',data);
     return await data;*/
   }
-  @Query(()=>Tournament)
-  async getOneTournament(name:string)
-  {
+  @Query(() => Tournament)
+  async getOneTournament(name: string) {
     const cachedData = await this.redisService.getClient().get(name);
 
     if (cachedData) {
-      console.log("DATA FROM CACHE   ", cachedData);
+      console.log('DATA FROM CACHE   ', cachedData);
       return JSON.parse(cachedData);
     }
 
     const data = await this.neo4jService.getTournament(name);
 
     // Postavljanje vrednosti u keš sa vremenom života od 30 sekundi
-    await this.redisService.getClient().set(name, JSON.stringify(data), 'ex', 30);
+    await this.redisService
+      .getClient()
+      .set(name, JSON.stringify(data), 'ex', 30);
 
     console.log('Data set to Redis cache', data);
     return data;
