@@ -15,6 +15,7 @@ import { RegistrationModule } from './registration/registration.module';
 import { CacheModule } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-store';
 import { RedisClientOptions } from 'redis';
+import { MessageModule } from './message/message.module';
 
 @Module({
   imports: [
@@ -30,12 +31,13 @@ import { RedisClientOptions } from 'redis';
       username: 'neo4j',
       password: 'neo',
     }),
-    CacheModule.register({isGlobal:true}),
+    CacheModule.register({ isGlobal: true }),
     RedisClientModule,
     AlbumModule,
     PlayerModule,
     TournamentModule,
     RegistrationModule,
+    MessageModule,
   ],
   controllers: [AppController],
   providers: [AppService, RedisClientService, Neo4jService],
