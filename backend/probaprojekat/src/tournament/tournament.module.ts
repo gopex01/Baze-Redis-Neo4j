@@ -5,10 +5,11 @@ import { TournamentController } from './tournament.controller';
 import { Neo4jService } from 'src/neo4j/neo4j.service';
 import { CacheModule } from '@nestjs/cache-manager';
 import { RedisService } from 'src/redis-client/redis.service';
+import { MessageService } from 'src/message/message.service';
 
 @Module({
   imports: [CacheModule.register()],
-  providers: [TournamentResolver, Neo4jService,RedisService],
+  providers: [TournamentResolver, Neo4jService, RedisService, MessageService],
   controllers: [TournamentController],
 })
 export class TournamentModule {}

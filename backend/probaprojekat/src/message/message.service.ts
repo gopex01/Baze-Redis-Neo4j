@@ -14,7 +14,7 @@ export class MessageService {
       newMessage.tournamentId,
     );
     const key = `message:${message.id}`;
-    await this.redisService.set(key, JSON.stringify(newMessage));
+    await this.redisService.set(key, JSON.stringify(newMessage), 5 * 60); //5 min po 60s
   }
   async getMessage(iD: string) {
     const key = `message:${iD}`;

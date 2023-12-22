@@ -16,6 +16,8 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-store';
 import { RedisClientOptions } from 'redis';
 import { MessageModule } from './message/message.module';
+import { MessageService } from './message/message.service';
+import { RedisService } from './redis-client/redis.service';
 
 @Module({
   imports: [
@@ -40,6 +42,12 @@ import { MessageModule } from './message/message.module';
     MessageModule,
   ],
   controllers: [AppController],
-  providers: [AppService, RedisClientService, Neo4jService],
+  providers: [
+    AppService,
+    RedisClientService,
+    Neo4jService,
+    MessageService,
+    RedisService,
+  ],
 })
 export class AppModule {}

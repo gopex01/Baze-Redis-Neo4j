@@ -3,6 +3,8 @@ import { ConfigService } from '@nestjs/config';
 import { Driver, Session } from 'neo4j-driver';
 import neo4j from 'neo4j-driver';
 import { throwIfEmpty } from 'rxjs';
+import { MessageEntity } from 'src/message/message.entity';
+import { MessageService } from 'src/message/message.service';
 import { Player } from 'src/player/player.entity';
 import { Tournament } from 'src/tournament/tournament.entity';
 
@@ -10,7 +12,10 @@ import { Tournament } from 'src/tournament/tournament.entity';
 export class Neo4jService {
   private readonly driver;
 
-  constructor(private readonly configService: ConfigService) {
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly messageService: MessageService,
+  ) {
     this.driver = neo4j.driver(
       'bolt://localhost:7687',
       neo4j.auth.basic('', ''),
@@ -251,18 +256,10 @@ export class Neo4jService {
     tournamentId: string,
   ) {
     const session: Session = this.driver.session();
-    const player = await this.getOnePlayer(playerUsername);
-    console.log(player);
-    const tournament = await this.getTournament(tournamentId);
-    console.log(tournament);
-    //if (player && tournament) {
-    //   return 'pronadjeni su';
-    //tournament.Players = tournament.Players || [];
-    //tournament.Players.push(player);
-    //await this.updateTournament(tournament);
-    //} else {
-    //   throw new Error('Player or Tournament not found');
-    // }
+    // const player = await this.getOnePlayer(playerUsername);
+    // console.log(player);
+    // const tournament = await this.getTournament(tournamentId);
+    // console.log(tournament);
     const query = `
       MATCH (p:Player {username: $playerUsername})
       MATCH (t) WHERE ID(t) = toInteger($tournamentId)
@@ -272,6 +269,14 @@ export class Neo4jService {
       playerUsername,
       tournamentId,
     });
+    const message: MessageEntity = new MessageEntity(
+      'prijavljeni ste na turnir',
+      '21:12',
+      'delivered',
+      '0',
+      '2',
+    );
+    await this.messageService.createMessage(message);
   }
   async updateTournament(tournament: Tournament) {
     const session: Session = this.driver.session();
