@@ -98,7 +98,7 @@ export class TournamentResolver {
     return data;
   }
   @Query(() => Tournament)
-  async playersOnTournament(tournamentName: string) {
-    return this.neo4jService.playersOnTournament(tournamentName);
+  async getAllPlayersOnTournament(tournamentName: string) {
+    return this.neo4jService.getAllPlayersOnTournament(tournamentName);
   }
 }

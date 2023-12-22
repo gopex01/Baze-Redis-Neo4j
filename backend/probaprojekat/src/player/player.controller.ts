@@ -33,19 +33,19 @@ export class PlayerController {
   async getPlayerById(@Param('playerId') playerId: string) {
     return await this.igracResolver.getPlayerById(playerId);
   }
-  @Patch('signInPlayerOnTournament/:playerUsername/:tournamentId')
-  async signInPlayerOnTournament(
+  @Patch('registerPlayerForTournament/:playerUsername/:tournamentId')
+  async registerPlayerForTournament(
     @Param('playerUsername') playerUsername: string,
     @Param('tournamentId') tournamentId: string,
   ) {
-    return await this.igracResolver.signInPlayerOnTournament(
+    return await this.igracResolver.registerPlayerForTournament(
       playerUsername,
       tournamentId,
     );
   }
-  @Get('playerTournaments/:playerUsername')
-  async playerTournaments(@Param('playerUsername') playerUsername: string) {
-    return await this.igracResolver.playerTournaments(playerUsername);
+  @Get('getPlayerTournaments/:playerUsername')
+  async getPlayerTournaments(@Param('playerUsername') playerUsername: string) {
+    return await this.igracResolver.getPlayerTournaments(playerUsername);
   }
   @Get('getTeammates/:playerUsername/:tournamentName')
   async getTeammates(

@@ -246,7 +246,10 @@ export class Neo4jService {
       await session.close();
     }
   }
-  async signInPlayerOnTournament(playerUsername: string, tournamentId: string) {
+  async registerPlayerForTournament(
+    playerUsername: string,
+    tournamentId: string,
+  ) {
     const session: Session = this.driver.session();
     const player = await this.getOnePlayer(playerUsername);
     console.log(player);
@@ -291,7 +294,7 @@ export class Neo4jService {
   async close(): Promise<void> {
     await this.driver.close();
   }
-  async playerTournaments(playerUsername: string) {
+  async getPlayerTournaments(playerUsername: string) {
     const session: Session = this.driver.session();
     const query = `MATCH (p:Player {username: $playerUsername})-[:UCESTVUJE_NA]->(t:TOURNAMENT)
     RETURN t`;
@@ -299,7 +302,7 @@ export class Neo4jService {
     const turniri = result.records.map((record) => record.get('t').properties);
     return turniri;
   }
-  async playersOnTournament(tournamentName: string) {
+  async getAllPlayersOnTournament(tournamentName: string) {
     const session = this.driver.session();
     //const query = `MATCH (p:Player)-[:UCESTVUJE_NA]->(MATCH ((t) WHERE ID(t) = toInteger($tournamentName)) RETURN p`;
     const query = `

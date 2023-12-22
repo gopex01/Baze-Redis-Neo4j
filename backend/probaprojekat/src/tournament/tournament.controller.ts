@@ -60,8 +60,12 @@ export class TournamentController {
   async getTournamentById(@Param('tournamentId') tournamentId: string) {
     return await this.tournamentResolver.getTournamentById(tournamentId);
   }
-  @Get('playersOnTournament/:tournamentName')
-  async playersOnTournament(@Param('tournamentName') tournamentName: string) {
-    return await this.tournamentResolver.playersOnTournament(tournamentName);
+  @Get('getAllPlayersOnTournament/:tournamentName')
+  async getAllPlayersOnTournament(
+    @Param('tournamentName') tournamentName: string,
+  ) {
+    return await this.tournamentResolver.getAllPlayersOnTournament(
+      tournamentName,
+    );
   }
 }
