@@ -14,7 +14,7 @@ export class Registration {
   @Field()
   numberOfMouses: number;
   @Field(() => [ID])
-  PlayersIds: string[];
+  playersIds: string[];
   @Field(() => ID)
-  TournamentId: string;
+  tournamentId: string;
 }

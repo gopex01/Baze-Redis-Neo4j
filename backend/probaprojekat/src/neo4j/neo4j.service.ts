@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Driver, Session } from 'neo4j-driver';
+import { Driver, Session, session } from 'neo4j-driver';
 import neo4j from 'neo4j-driver';
 import { throwIfEmpty } from 'rxjs';
 import { MessageEntity } from 'src/message/message.entity';
@@ -57,8 +57,17 @@ export class Neo4jService {
       await session.close();
     }
   }
-  async deleteTournament(turnirId: number) {
-    //vezuje se za prijave
+  async deleteTournament(turnirId: string) {
+    const session: Session = this.driver.session();
+    try {
+      const query = `
+      MATCH (t) WHERE ID(t)=toInteger($turnirId) 
+      MATCH (r:Registration)-[p:REGISTRATION_FOR]->(t)
+      DETACH DELETE r`;
+      await session.run(query, { turnirId });
+    } finally {
+      await session.close();
+    }
   }
   async filterTournaments(
     pretragaNaziv: string | undefined,
@@ -167,10 +176,6 @@ export class Neo4jService {
     const session: Session = this.driver.session();
     try {
       const result = await session.run('MATCH (n:Player) RETURN n');
-      console.log('Bez records');
-      console.log(result);
-      console.log('Sa records');
-      console.log(result.records);
       return result.records.map((record) => record.get('n').properties);
     } finally {
       await session.close();
@@ -186,7 +191,6 @@ export class Neo4jService {
       if (result.records.length > 0) {
         const player = result.records[0].get('n').properties;
         const id = result.records[0].get('n').identity.toString();
-        console.log(result.records[0].get('n'));
         const playerWithNeo4jId = {
           ...player,
           id,
@@ -259,59 +263,59 @@ export class Neo4jService {
     }
   }
   //! to je ustv create registratoin, vrv treba obrisati
-  async registerPlayerForTournament(
-    playerUsername: string,
-    tournamentId: string,
-  ) {
-    const session: Session = this.driver.session();
-    const player = await this.getOnePlayer(playerUsername);
-    const tournament = await this.getTournamentById(tournamentId);
-    if (!player || !tournament) {
-      return null;
-    }
-    // const query = `
-    //   MATCH (p:Player {username: $playerUsername})
-    //   MATCH (t) WHERE ID(t) = toInteger($tournamentId)
-    //   MERGE (p)-[:UCESTVUJE_NA]->(t)
-    // `;
-    //   const query = `
-    //   MATCH (p:Player {username: $playerUsername})
-    // MATCH (t:Tournament {id: $tournamentId})
-    // OPTIONAL MATCH (p)-[:REGISTERED_FOR]->(r:Registration)-[:FOR_TOURNAMENT]->(t)
-    // WITH p, t, r
-    // MERGE (p)-[:REGISTERED_FOR]->(reg:Registration)
-    // ON CREATE SET reg = coalesce(r, {})
-    // WITH reg, t
-    // MERGE (reg)-[:FOR_TOURNAMENT]->(t)
-    // RETURN reg
-    //   `;
-    const query = `
-    MATCH (p:Player {username: $playerUsername})
-    MATCH (t) WHERE ID(t) = toInteger($tournamentId)
-    OPTIONAL MATCH (p)-[:REGISTERED_FOR]->(existingReg:Registration)-[:FOR_TOURNAMENT]->(t)
-    WITH p, t, existingReg
-    MERGE (p)-[:REGISTERED_FOR]->(reg:Registration)
-    ON CREATE SET reg = coalesce(existingReg, {})
-    WITH reg, t, existingReg
-    FOREACH (r IN CASE WHEN existingReg IS NULL THEN [1] ELSE [] END |
-      MERGE (reg)-[:FOR_TOURNAMENT]->(t)
-    )
-    RETURN reg
-    `;
-    const result = await session.run(query, {
-      playerUsername,
-      tournamentId,
-    });
-    const message: MessageEntity = new MessageEntity(
-      'prijavljeni ste na turnir',
-      'delivered',
-    );
-    message.playerId = player.id;
-    message.tournamentId = tournamentId;
-    console.log('id playera je' + player.id);
-    console.log(message);
-    await this.messageService.createMessage(message);
-  }
+  // async registerPlayerForTournament(
+  //   playerUsername: string,
+  //   tournamentId: string,
+  // ) {
+  //   const session: Session = this.driver.session();
+  //   const player = await this.getOnePlayer(playerUsername);
+  //   const tournament = await this.getTournamentById(tournamentId);
+  //   if (!player || !tournament) {
+  //     return null;
+  //   }
+  //   // const query = `
+  //   //   MATCH (p:Player {username: $playerUsername})
+  //   //   MATCH (t) WHERE ID(t) = toInteger($tournamentId)
+  //   //   MERGE (p)-[:UCESTVUJE_NA]->(t)
+  //   // `;
+  //   //   const query = `
+  //   //   MATCH (p:Player {username: $playerUsername})
+  //   // MATCH (t:Tournament {id: $tournamentId})
+  //   // OPTIONAL MATCH (p)-[:REGISTERED_FOR]->(r:Registration)-[:FOR_TOURNAMENT]->(t)
+  //   // WITH p, t, r
+  //   // MERGE (p)-[:REGISTERED_FOR]->(reg:Registration)
+  //   // ON CREATE SET reg = coalesce(r, {})
+  //   // WITH reg, t
+  //   // MERGE (reg)-[:FOR_TOURNAMENT]->(t)
+  //   // RETURN reg
+  //   //   `;
+  //   const query = `
+  //   MATCH (p:Player {username: $playerUsername})
+  //   MATCH (t) WHERE ID(t) = toInteger($tournamentId)
+  //   OPTIONAL MATCH (p)-[:REGISTERED_FOR]->(existingReg:Registration)-[:FOR_TOURNAMENT]->(t)
+  //   WITH p, t, existingReg
+  //   MERGE (p)-[:REGISTERED_FOR]->(reg:Registration)
+  //   ON CREATE SET reg = coalesce(existingReg, {})
+  //   WITH reg, t, existingReg
+  //   FOREACH (r IN CASE WHEN existingReg IS NULL THEN [1] ELSE [] END |
+  //     MERGE (reg)-[:FOR_TOURNAMENT]->(t)
+  //   )
+  //   RETURN reg
+  //   `;
+  //   const result = await session.run(query, {
+  //     playerUsername,
+  //     tournamentId,
+  //   });
+  //   const message: MessageEntity = new MessageEntity(
+  //     'prijavljeni ste na turnir',
+  //     'delivered',
+  //   );
+  //   message.playerId = player.id;
+  //   message.tournamentId = tournamentId;
+  //   console.log('id playera je' + player.id);
+  //   console.log(message);
+  //   await this.messageService.createMessage(message);
+  // }
   async updateTournament(tournament: Tournament) {
     const session: Session = this.driver.session();
 
@@ -372,9 +376,6 @@ export class Neo4jService {
   async createRegistration(newRegistration: Registration) {
     const session: Session = await this.driver.session();
     try {
-      // const query = `
-      // CREATE (r:Registration {teamName:$newRegistration.teamName,numberOfHeadphones:$newRegistration.numberOfHeadphones
-      // ,numberOfPCs:$newRegistration.numberOfPCs,numberOfKeyboards:$newRegistration.numberOfKeyboards,numberOfMouses:$newRegistration.numberOfMouses})`;
       const query = `MATCH (t) WHERE ID(t)=toInteger($newRegistration.tournamentId)
      CREATE (r:Registration{
         teamName: $newRegistration.teamName,
@@ -391,8 +392,37 @@ export class Neo4jService {
       RETURN r
       `;
       await session.run(query, { newRegistration });
+      const message: MessageEntity = new MessageEntity(
+        'prijavljeni ste na turnir',
+        'delivered',
+      );
+
+      // newRegistration.PlayersIds.forEach(async (playerId) => {
+      //   message.playerId = playerId;
+      //   message.tournamentId = newRegistration.TournamentId;
+      //   await this.messageService.createMessage(message);
+      // });
     } finally {
-      session.close();
+      await session.close();
+    }
+  }
+  async allRegistrationsForTournament(tournamentId: string) {
+    const session: Session = await this.driver.session();
+    const query = `MATCH (t) WHERE ID(t)=toInteger($tournamentId)
+    MATCH (r:Registration)-[:REGISTRATION_FOR]->(t)
+    RETURN r
+    `;
+    const result = await session.run(query, { tournamentId });
+    return result.records.map((record) => record.get('r').properties);
+  }
+  async removeTeamFromTournament(registrationId: string) {
+    const session: Session = await this.driver.session();
+    try {
+      const query = `MATCH (r) WHERE ID(r)=toInteger($registrationId)
+    DETACH DELETE r`;
+      await session.run(query, { registrationId });
+    } finally {
+      await session.close();
     }
   }
 }

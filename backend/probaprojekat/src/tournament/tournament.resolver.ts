@@ -32,6 +32,10 @@ export class TournamentResolver {
     };
   }
   @Query(() => Tournament)
+  async deleteTournament(tournamentId: string) {
+    return this.neo4jService.deleteTournament(tournamentId);
+  }
+  @Query(() => Tournament)
   async filterTournaments(
     pretragaNaziv: string | undefined,
     pretragaMesto: string | undefined,

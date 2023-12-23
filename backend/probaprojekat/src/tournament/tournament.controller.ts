@@ -2,6 +2,7 @@ import {
   Body,
   CacheTTL,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -21,6 +22,10 @@ export class TournamentController {
   @Post('addTournament')
   async addTournament(@Body() tournament: Tournament) {
     return this.tournamentResolver.addTournament(tournament);
+  }
+  @Delete('deleteTournament/:tournamentId')
+  async deleteTournament(@Param('tournamentId') tournamentId: string) {
+    return this.tournamentResolver.deleteTournament(tournamentId);
   }
   //!NE RADI
   @Get(

@@ -45,16 +45,16 @@ export class IgracResolver {
   async getPlayerById(playerId: string) {
     return await this.neo4jService.getPlayerById(playerId);
   }
-  @Query(() => Player)
-  async registerPlayerForTournament(
-    playerUsername: string,
-    tournamentId: string,
-  ) {
-    return await this.neo4jService.registerPlayerForTournament(
-      playerUsername,
-      tournamentId,
-    );
-  }
+  // @Query(() => Player)
+  // async registerPlayerForTournament(
+  //   playerUsername: string,
+  //   tournamentId: string,
+  // ) {
+  //   return await this.neo4jService.registerPlayerForTournament(
+  //     playerUsername,
+  //     tournamentId,
+  //   );
+  // }
   @Query(() => Player)
   async getPlayerTournaments(playerUsername: string) {
     return await this.neo4jService.getPlayerTournaments(playerUsername);
