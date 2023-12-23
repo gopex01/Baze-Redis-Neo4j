@@ -57,4 +57,15 @@ export class PlayerController {
       tournamentName,
     );
   }
+  @Get('isPlayerRegisteredForTournament/:tournamentId/:playerId')
+  async isPlayerRegisteredForTournament(
+    @Param('tournamentId')
+    tournamentId: string,
+    @Param('playerId') playerId: string,
+  ) {
+    return await this.igracResolver.isPlayerRegisteredForTournament(
+      tournamentId,
+      playerId,
+    );
+  }
 }

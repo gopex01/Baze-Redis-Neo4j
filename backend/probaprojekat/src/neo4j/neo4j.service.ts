@@ -242,6 +242,26 @@ export class Neo4jService {
       await session.close();
     }
   }
+  async isPlayerRegisteredForTournament(
+    tournamentId: string,
+    playerId: string,
+  ) {
+    const session = await this.driver.session();
+    try {
+      const query = `
+      MATCH (p) WHERE ID(p)=toInteger($playerId)
+      MATCH (t) WHERE ID(t)=toInteger($tournamentId)
+      MATCH (p)-[:PARTICIPATES_IN]->(r:Registration)-[:REGISTRATION_FOR]->(t)
+      RETURN COUNT(r) as count
+      `;
+      const result = await session.run(query, { tournamentId, playerId });
+      const count = result.records[0].get('count').toInt();
+      console.log(result.records[0]);
+      return count > 0;
+    } finally {
+      await session.close();
+    }
+  }
   async getPlayerById(idPlayer: string) {
     const session: Session = this.driver.session();
     try {
@@ -262,60 +282,6 @@ export class Neo4jService {
       await session.close();
     }
   }
-  //! to je ustv create registratoin, vrv treba obrisati
-  // async registerPlayerForTournament(
-  //   playerUsername: string,
-  //   tournamentId: string,
-  // ) {
-  //   const session: Session = this.driver.session();
-  //   const player = await this.getOnePlayer(playerUsername);
-  //   const tournament = await this.getTournamentById(tournamentId);
-  //   if (!player || !tournament) {
-  //     return null;
-  //   }
-  //   // const query = `
-  //   //   MATCH (p:Player {username: $playerUsername})
-  //   //   MATCH (t) WHERE ID(t) = toInteger($tournamentId)
-  //   //   MERGE (p)-[:UCESTVUJE_NA]->(t)
-  //   // `;
-  //   //   const query = `
-  //   //   MATCH (p:Player {username: $playerUsername})
-  //   // MATCH (t:Tournament {id: $tournamentId})
-  //   // OPTIONAL MATCH (p)-[:REGISTERED_FOR]->(r:Registration)-[:FOR_TOURNAMENT]->(t)
-  //   // WITH p, t, r
-  //   // MERGE (p)-[:REGISTERED_FOR]->(reg:Registration)
-  //   // ON CREATE SET reg = coalesce(r, {})
-  //   // WITH reg, t
-  //   // MERGE (reg)-[:FOR_TOURNAMENT]->(t)
-  //   // RETURN reg
-  //   //   `;
-  //   const query = `
-  //   MATCH (p:Player {username: $playerUsername})
-  //   MATCH (t) WHERE ID(t) = toInteger($tournamentId)
-  //   OPTIONAL MATCH (p)-[:REGISTERED_FOR]->(existingReg:Registration)-[:FOR_TOURNAMENT]->(t)
-  //   WITH p, t, existingReg
-  //   MERGE (p)-[:REGISTERED_FOR]->(reg:Registration)
-  //   ON CREATE SET reg = coalesce(existingReg, {})
-  //   WITH reg, t, existingReg
-  //   FOREACH (r IN CASE WHEN existingReg IS NULL THEN [1] ELSE [] END |
-  //     MERGE (reg)-[:FOR_TOURNAMENT]->(t)
-  //   )
-  //   RETURN reg
-  //   `;
-  //   const result = await session.run(query, {
-  //     playerUsername,
-  //     tournamentId,
-  //   });
-  //   const message: MessageEntity = new MessageEntity(
-  //     'prijavljeni ste na turnir',
-  //     'delivered',
-  //   );
-  //   message.playerId = player.id;
-  //   message.tournamentId = tournamentId;
-  //   console.log('id playera je' + player.id);
-  //   console.log(message);
-  //   await this.messageService.createMessage(message);
-  // }
   async updateTournament(tournament: Tournament) {
     const session: Session = this.driver.session();
 
@@ -339,7 +305,8 @@ export class Neo4jService {
   }
   async getPlayerTournaments(playerUsername: string) {
     const session: Session = this.driver.session();
-    const query = `MATCH (p:Player {username: $playerUsername})-[:UCESTVUJE_NA]->(t:TOURNAMENT)
+    const query = `MATCH (p:Player {username: $playerUsername})-[:PARTICIPATES_IN]->(r:Registration)-
+    [REGISTRATION_FOR]->(t:TOURNAMENT)
     RETURN t`;
     const result = await session.run(query, { playerUsername });
     const turniri = result.records.map((record) => record.get('t').properties);
@@ -358,13 +325,13 @@ export class Neo4jService {
   }
   async getTeammates(playerId: string, tournamentName: string) {
     const session = await this.driver.session();
-    const query = `MATCH (p:Player)-[:UCESTVUJE_NA]->(t:TOURNAMENT {name:$tournamentName})
-    WHERE NOT ID(p)=toInteger($playerId)
-    RETURN p
-    `;
+    const query = `
+      MATCH (p:Player)-[:PARTICIPATES_IN]->(r:Registration)-[:REGISTRATION_FOR]->(t:TOURNAMENT {name: $tournamentName})
+      WHERE NOT ID(p) = toInteger($playerId)
+      RETURN p`;
     const result = await session.run(query, { playerId, tournamentName });
-    const igraci = result.records.map((record) => record.get('p').properties);
-    return igraci;
+    const players = result.records.map((record) => record.get('p').properties);
+    return players;
   }
   //!---------------REGISTRATION---------------
   async getRegistration(registrationId: string) {
