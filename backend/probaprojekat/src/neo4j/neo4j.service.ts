@@ -6,6 +6,7 @@ import { throwIfEmpty } from 'rxjs';
 import { MessageEntity } from 'src/message/message.entity';
 import { MessageService } from 'src/message/message.service';
 import { Player } from 'src/player/player.entity';
+import { Registration } from 'src/registration/registration.entity';
 import { Tournament } from 'src/tournament/tournament.entity';
 
 @Injectable()
@@ -257,6 +258,7 @@ export class Neo4jService {
       await session.close();
     }
   }
+  //! to je ustv create registratoin, vrv treba obrisati
   async registerPlayerForTournament(
     playerUsername: string,
     tournamentId: string,
@@ -267,10 +269,34 @@ export class Neo4jService {
     if (!player || !tournament) {
       return null;
     }
+    // const query = `
+    //   MATCH (p:Player {username: $playerUsername})
+    //   MATCH (t) WHERE ID(t) = toInteger($tournamentId)
+    //   MERGE (p)-[:UCESTVUJE_NA]->(t)
+    // `;
+    //   const query = `
+    //   MATCH (p:Player {username: $playerUsername})
+    // MATCH (t:Tournament {id: $tournamentId})
+    // OPTIONAL MATCH (p)-[:REGISTERED_FOR]->(r:Registration)-[:FOR_TOURNAMENT]->(t)
+    // WITH p, t, r
+    // MERGE (p)-[:REGISTERED_FOR]->(reg:Registration)
+    // ON CREATE SET reg = coalesce(r, {})
+    // WITH reg, t
+    // MERGE (reg)-[:FOR_TOURNAMENT]->(t)
+    // RETURN reg
+    //   `;
     const query = `
-      MATCH (p:Player {username: $playerUsername})
-      MATCH (t) WHERE ID(t) = toInteger($tournamentId)
-      MERGE (p)-[:UCESTVUJE_NA]->(t)
+    MATCH (p:Player {username: $playerUsername})
+    MATCH (t) WHERE ID(t) = toInteger($tournamentId)
+    OPTIONAL MATCH (p)-[:REGISTERED_FOR]->(existingReg:Registration)-[:FOR_TOURNAMENT]->(t)
+    WITH p, t, existingReg
+    MERGE (p)-[:REGISTERED_FOR]->(reg:Registration)
+    ON CREATE SET reg = coalesce(existingReg, {})
+    WITH reg, t, existingReg
+    FOREACH (r IN CASE WHEN existingReg IS NULL THEN [1] ELSE [] END |
+      MERGE (reg)-[:FOR_TOURNAMENT]->(t)
+    )
+    RETURN reg
     `;
     const result = await session.run(query, {
       playerUsername,
@@ -335,5 +361,38 @@ export class Neo4jService {
     const result = await session.run(query, { playerId, tournamentName });
     const igraci = result.records.map((record) => record.get('p').properties);
     return igraci;
+  }
+  //!---------------REGISTRATION---------------
+  async getRegistration(registrationId: string) {
+    const session = await this.driver.session();
+    const query = `MATCH (r: Registration) WHERE ID(r)=toInteger($registrationId) RETURN r`;
+    const result = await session.run(query, { registrationId });
+    return result.records.map((record) => record.get('r').properties);
+  }
+  async createRegistration(newRegistration: Registration) {
+    const session: Session = await this.driver.session();
+    try {
+      // const query = `
+      // CREATE (r:Registration {teamName:$newRegistration.teamName,numberOfHeadphones:$newRegistration.numberOfHeadphones
+      // ,numberOfPCs:$newRegistration.numberOfPCs,numberOfKeyboards:$newRegistration.numberOfKeyboards,numberOfMouses:$newRegistration.numberOfMouses})`;
+      const query = `MATCH (t) WHERE ID(t)=toInteger($newRegistration.tournamentId)
+     CREATE (r:Registration{
+        teamName: $newRegistration.teamName,
+        numberOfHeadphones: $newRegistration.numberOfHeadphones,
+        numberOfPCs: $newRegistration.numberOfPCs,
+        numberOfKeyboards: $newRegistration.numberOfKeyboards,
+        numberOfMouses: $newRegistration.numberOfMouses
+      })
+      MERGE (t)<-[:REGISTRATION_FOR]-(r)
+      WITH r
+      UNWIND $newRegistration.playersIds as playerId
+      MATCH (p) WHERE ID(p)=toInteger(playerId)
+      MERGE (p)-[:PARTICIPATES_IN]->(r)
+      RETURN r
+      `;
+      await session.run(query, { newRegistration });
+    } finally {
+      session.close();
+    }
   }
 }

@@ -1,11 +1,14 @@
 import { Module } from '@nestjs/common';
-import { RegistrationService } from './registration.service';
+
 import { RedisService } from 'src/redis-client/redis.service';
 import { RegistrationController } from './registration.controller';
+import { RegistrationResolver } from './registration.resolver';
+import { Neo4jService } from 'src/neo4j/neo4j.service';
+import { MessageService } from 'src/message/message.service';
 
 @Module({
   imports: [],
-  providers: [RegistrationService, RedisService],
+  providers: [RedisService, RegistrationResolver, Neo4jService, MessageService],
   controllers: [RegistrationController],
 })
 export class RegistrationModule {}

@@ -18,8 +18,6 @@ export class Tournament {
   numberOfTeamsNow: number;
   @Field()
   price: number;
-  // @Field(()=>[Player], {nullable:true})
-  // ListOfPlayers?:Player[];
-  @Field(() => [ID]) // Polje koje će čuvati ID-ove turnira
-  playersIds: string[]; // Niz ID-ova turnira koje igrač igra
+  @Field(() => [ID])
+  registrationsIds: string[];
 }
