@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { IgracResolver } from './player.resolver';
 import { Player } from './player.entity';
 import { identity } from 'rxjs';
-
+//
 @Controller('player')
 export class PlayerController {
   constructor(private readonly igracResolver: IgracResolver) {}
