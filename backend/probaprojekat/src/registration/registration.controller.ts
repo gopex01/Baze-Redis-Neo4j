@@ -1,10 +1,10 @@
 import { Controller, Post, Body, Get, Param, Delete } from '@nestjs/common';
 import { Registration } from './registration.entity';
 import { RegistrationResolver } from './registration.resolver';
-@Controller('Registration')
+@Controller('prijava')
 export class RegistrationController {
   constructor(private readonly registrationResolver: RegistrationResolver) {}
-  @Post('createRegistration')
+  @Post('dodajPrijavu')
   async createRegistration(@Body() newRegistration: Registration) {
     return await this.registrationResolver.createRegistration(newRegistration);
   }
@@ -12,7 +12,7 @@ export class RegistrationController {
   async getRegistration(@Param('registrationId') registrationId: string) {
     return await this.registrationResolver.getRegistration(registrationId);
   }
-  @Get('allRegistrationsForTournament/:tournamentId')
+  @Get('prijaveNaTurniru/:tournamentId')
   async allRegistrationsForTournament(
     @Param('tournamentId') tournamentId: string,
   ) {
@@ -20,7 +20,7 @@ export class RegistrationController {
       tournamentId,
     );
   }
-  @Delete('removeTeamFromTournament/:registrationId')
+  @Delete('izbaciTimSaTurnira/:registrationId')
   async removeTeamFromTournament(
     @Param('registrationId') registrationId: string,
   ) {
@@ -28,6 +28,7 @@ export class RegistrationController {
       registrationId,
     );
   }
+  //todo odjaviSvojTimSaTurnira
   // @Get('getAllRegistrationsFromPlayer/:PlayerUsername')
   // async getAllRegistrationsFromPlayer(@Param('PlayerUsername') PlayerUsername:string)
   // {

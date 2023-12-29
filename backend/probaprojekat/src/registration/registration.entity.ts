@@ -4,15 +4,15 @@ export class Registration {
   @Field(() => ID)
   id: string;
   @Field()
-  teamName: string;
+  nazivTima: string;
   @Field()
-  numberOfHeadphones: number;
+  potrebanBrojSlusalica: number;
   @Field()
-  numberOfPCs: number;
+  potrebanBrojRacunara: number;
   @Field()
-  numberOfKeyboards: number;
+  potrebanBrojTastatura: number;
   @Field()
-  numberOfMouses: number;
+  potrebanBrojMiseva: number;
   @Field(() => [ID])
   playersIds: string[];
   @Field(() => ID)

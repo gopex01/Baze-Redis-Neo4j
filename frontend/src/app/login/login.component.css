@@ -1,0 +1,53 @@
+.login {
+  max-width: 300px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.login h2 {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.login form {
+  display: flex;
+  flex-direction: column;
+}
+
+.login label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.login input[type="text"],
+.login input[type="password"] {
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  font-size: 1rem;
+}
+
+.login .enabled-button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  padding: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.login .enabled-button:hover {
+  background-color: #0056b3;
+}
+.login .disabled-button {
+  background-color: lightgray; /* Promenite boju pozadine za onemogućeno dugme */
+  color: gray; /* Promenite boju teksta za onemogućeno dugme */
+  cursor: not-allowed; /* Promenite kursor za onemogućeno dugme */
+}

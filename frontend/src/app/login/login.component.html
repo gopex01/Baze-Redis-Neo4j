@@ -1,0 +1,34 @@
+<div class="login">
+  <h2>Prijava</h2>
+  <form>
+    <label for="korisnickoIme">Korisničko ime:</label>
+    <input
+      type="text"
+      id="korisnickoIme"
+      [(ngModel)]="korisnickoIme"
+      name="korisnickoIme"
+      autocomplete="off"
+      required
+    />
+
+    <label for="lozinka">Lozinka:</label>
+    <input
+      type="password"
+      id="lozinka"
+      [(ngModel)]="lozinka"
+      name="lozinka"
+      autocomplete="off"
+      required
+    />
+
+    <button
+      (click)="prijaviSe()"
+      [ngClass]="{
+        'enabled-button': prijavljeniKorisnik === undefined,
+        'disabled-button': prijavljeniKorisnik !== undefined
+      }"
+    >
+      Prijavi se
+    </button>
+  </form>
+</div>

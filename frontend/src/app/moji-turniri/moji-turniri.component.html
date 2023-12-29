@@ -1,0 +1,7 @@
+<div class="container">
+  <ul>
+    <li *ngFor="let turnir of mojiTurniri$ | async">
+      <app-turnir [turnir]="turnir"></app-turnir>
+    </li>
+  </ul>
+</div>

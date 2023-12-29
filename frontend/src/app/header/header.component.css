@@ -1,0 +1,43 @@
+/* Stilizacija navigacijske trake */
+.navbar {
+  background-color: #333;
+  padding: 10px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Stilizacija liste opcija u traci */
+.navbar ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+
+/* Stilizacija svake opcije */
+.navbar li {
+  margin: 0 20px;
+}
+
+/* Stilizacija linkova u opcijama */
+.navbar a {
+  text-decoration: none;
+  color: #fff;
+  transition: color 0.3s, transform 0.3s;
+}
+
+/* Stilizacija linkova kada su na hover */
+.navbar a:hover {
+  color: #ff5733;
+  transform: scale(1.1);
+}
+
+/* Stilizacija opcije "Odjavi se" */
+.logout {
+  text-decoration: none;
+  color: #fff;
+}
+.login-link {
+  margin-left: 600px; /* Podesite željeni razmak za "Login" */
+}

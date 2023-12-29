@@ -1,0 +1,17 @@
+/* Stilizacija za <div> element sa klasom 'profil' */
+.igrac {
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Stilizacija za <p> elemente unutar '.profil' */
+.igrac p {
+  font-size: 1rem;
+  margin: 5px 0;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  color: rgb(3, 47, 47);
+}

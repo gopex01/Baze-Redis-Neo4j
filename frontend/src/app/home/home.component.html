@@ -1,0 +1,11 @@
+<app-search-bar
+  (pretragaRezultati)="handlePretragaRezultati($event)"
+></app-search-bar>
+<div class="container">
+  <h3>Turniri</h3>
+  <ul class="turnir-list">
+    <li *ngFor="let turnir of turniriStore$ | async">
+      <app-turnir [turnir]="turnir"></app-turnir>
+    </li>
+  </ul>
+</div>

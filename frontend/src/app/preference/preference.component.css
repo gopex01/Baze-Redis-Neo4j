@@ -1,0 +1,42 @@
+/* Stilizacija naslova */
+h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+/* Stilizacija forme */
+form {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+/* Stilizacija labela za ulazne elemente */
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+/* Stilizacija ulaznih polja za unos broja */
+input[type="number"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Stilizacija dugmeta */
+button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Dodatni stil za dugme na hover */
+button:hover {
+  background-color: #0056b3;
+}

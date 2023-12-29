@@ -1,0 +1,58 @@
+<div class="form-container">
+  <h2>Unos podataka za Turnir</h2>
+  <form>
+    <div class="form-group">
+      <label for="naziv">Naziv:</label>
+      <input
+        type="text"
+        id="naziv"
+        name="naziv"
+        [(ngModel)]="turnir.naziv"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="datumOdrzavanja">Datum održavanja:</label>
+      <input
+        type="date"
+        id="datumOdrzavanja"
+        name="datumOdrzavanja"
+        [(ngModel)]="turnir.datumOdrzavanja"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="mestoOdrzavanja">Mesto održavanja:</label>
+      <input
+        type="text"
+        id="mestoOdrzavanja"
+        name="mestoOdrzavanja"
+        [(ngModel)]="turnir.mestoOdrzavanja"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="maxBrojTimova">Broj timova:</label>
+      <input
+        type="number"
+        id="maxBrojTimova"
+        name="maxBrojTimova"
+        [(ngModel)]="turnir.maxBrojTimova"
+        required
+      />
+    </div>
+    <div class="form-group">
+      <label for="nagrada">Nagrada pobedniku:</label>
+      <input
+        type="number"
+        id="nagrada"
+        name="nagrada"
+        [(ngModel)]="turnir.nagrada"
+        required
+      />
+    </div>
+    <button class="submit-button" (click)="kreirajTurnir()">
+      Kreiraj Turnir
+    </button>
+  </form>
+</div>

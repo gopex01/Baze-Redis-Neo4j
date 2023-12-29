@@ -12,24 +12,26 @@ import { TournamentResolver } from './tournament.resolver';
 import { Tournament } from './tournament.entity';
 import { CacheInterceptor } from '@nestjs/cache-manager';
 
-@Controller('Tournament')
+@Controller('turnir')
 export class TournamentController {
   constructor(private readonly tournamentResolver: TournamentResolver) {}
-  @Get('allTournaments')
+  @Get('sviTurniri')
   async allTournaments() {
     return this.tournamentResolver.allTournaments();
   }
-  @Post('addTournament')
+  //todo mojiturniri
+  //todo proveri dodajturnir
+  @Post('dodajTurnir')
   async addTournament(@Body() tournament: Tournament) {
     return this.tournamentResolver.addTournament(tournament);
   }
-  @Delete('deleteTournament/:tournamentId')
+  @Delete('obrisiTurnir/:tournamentId')
   async deleteTournament(@Param('tournamentId') tournamentId: string) {
     return this.tournamentResolver.deleteTournament(tournamentId);
   }
   //!NE RADI
   @Get(
-    'filterTournaments/:pretragaNaziv/:pretragaMesto/:pretragaPocetniDatum/:pretragaKrajnjiDatum/:pretragaPocetnaNagrada/:pretragaKrajnjaNagrada',
+    'filtrirajTurnire/:pretragaNaziv/:pretragaMesto/:pretragaPocetniDatum/:pretragaKrajnjiDatum/:pretragaPocetnaNagrada/:pretragaKrajnjaNagrada',
   )
   async filterTournaments(
     @Param('pretragaNaziv') pretragaNaziv: string | undefined = '',

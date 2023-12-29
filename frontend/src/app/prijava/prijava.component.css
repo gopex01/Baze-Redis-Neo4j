@@ -1,0 +1,143 @@
+/* Stilizacija za naslove h2 */
+h2 {
+  font-size: 24px;
+  margin-top: 20px;
+  color: #333;
+}
+
+/* Stilizacija za div sa klasom 'container' */
+.container {
+  background-color: #f0f0f0;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+/* Stilizacija za ul listu */
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+/* Stilizacija za listu sa igracima */
+ul li {
+  padding: 10px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  margin-bottom: 10px;
+}
+
+/* Stilizacija za dugme "Izbaci iz tima" */
+button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+/* Stilizacija za polje za unos teksta */
+input[type="text"] {
+  width: 300px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+label[for="nazivTima"] {
+  display: block; /* Prikazuje labelu kao blok element za bolje pozicioniranje */
+  margin-bottom: 10px; /* Razmak ispod labela */
+  font-size: 24px;
+  margin-top: 20px;
+  color: #333;
+}
+/* Stilizacija za kontejner dugmeta */
+.button-container {
+  text-align: center; /* Centriranje dugmeta */
+  margin-top: 20px;
+}
+
+/* Stilizacija za prilagođeno dugme */
+.custom-button {
+  background-color: #4caf50;
+  color: #fff;
+  border: none;
+  padding: 15px 30px; /* Povećavanje padding-a za veće dugme */
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 18px; /* Povećavanje veličine fonta */
+  transition: background-color 0.3s; /* Efekat promene boje prilikom hover-a */
+}
+
+.custom-button:hover {
+  background-color: #45a049;
+}
+
+/* Stilizacija za kontejner preferenci */
+.preference-container {
+  background-color: #f8f8f8;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-top: 20px;
+}
+
+/* Stilizacija za naslov "Preference" */
+.preference-container h2 {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+/* Stilizacija za detalje preferenci */
+.preference-details {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  padding: 15px;
+  border-radius: 5px;
+}
+
+/* Stilizacija za pojedinačne preference */
+.preference-details p {
+  margin: 0;
+  padding: 5px 0;
+}
+
+/* Stilizacija za sekundarno dugme "Izaberi iz tima" */
+.secondary-button {
+  background-color: transparent; /* Transparentna pozadina */
+  color: #333; /* Boja teksta */
+  border: 2px solid #333; /* Okvir */
+  margin-left: 20px; /* Pomeranje na desno */
+  padding: 10px 20px; /* Povećavanje padding-a */
+  font-size: 14px; /* Veličina fonta */
+  border-radius: 5px; /* Zaobljeni uglovi */
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s; /* Efekti pri hover-u */
+}
+
+.secondary-button:hover {
+  background-color: #333; /* Boja pozadine pri hover-u */
+  color: #fff; /* Boja teksta pri hover-u */
+  border-color: #333; /* Boja okvira pri hover-u */
+}
+
+/* Stilizacija za dugme "Izaberi igrače" */
+.choose-players-button {
+  background-color: #007bff;
+  color: #fff; /* Boja teksta */
+  border: none; /* Bez okvira */
+  padding: 12px 24px; /* Povećavanje padding-a */
+  font-size: 14px; /* Veličina fonta */
+  border-radius: 8px; /* Zaobljeni uglovi */
+  cursor: pointer;
+  transition: background-color 0.3s; /* Efekat promene boje prilikom hover-a */
+}
+
+.choose-players-button:hover {
+  background-color: #175597;
+}

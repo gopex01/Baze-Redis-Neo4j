@@ -1,0 +1,20 @@
+<div>
+  <ul>
+    <h2>Prijavljeni timovi</h2>
+    <li *ngFor="let prijava of prijave$ | async">
+      <h3>{{ prijava.nazivTima }}</h3>
+      <ng-container *ngIf="trenutnoPrijavljeniKorisnik$ | async as korisnik">
+        <ng-container *ngIf="korisnik.role == 'organizator'">
+          <ng-container *ngIf="jeOrganizatorTurnira | async">
+            <p>ispunjen uslov</p>
+            <button (click)="izbaciTimSaTurnira(prijava.id)">Izbaci tim</button>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+      <app-igrac
+        *ngFor="let igrac of prijava.igraci"
+        [igrac]="igrac"
+      ></app-igrac>
+    </li>
+  </ul>
+</div>

@@ -1,0 +1,48 @@
+<h1>Unesite potreban broj opreme:</h1>
+<form>
+  <label for="potrebanBrojSlusalica">Potreban broj slušalica:</label>
+  <input
+    type="number"
+    id="potrebanBrojSlusalica"
+    [(ngModel)]="zeljenePreference.potrebanBrojSlusalica"
+    name="potrebanBrojSlusalica"
+    min="0"
+    max="3"
+  />
+  <br />
+
+  <label for="potrebanBrojRacunara">Potreban broj računara:</label>
+  <input
+    type="number"
+    id="potrebanBrojRacunara"
+    [(ngModel)]="zeljenePreference.potrebanBrojRacunara"
+    name="potrebanBrojRacunara"
+    min="0"
+    max="3"
+  />
+  <br />
+
+  <label for="potrebanBrojTastatura">Potreban broj tastatura:</label>
+  <input
+    type="number"
+    id="potrebanBrojTastatura"
+    [(ngModel)]="zeljenePreference.potrebanBrojTastatura"
+    name="potrebanBrojTastatura"
+    min="0"
+    max="3"
+  />
+  <br />
+
+  <label for="potrebanBrojMiseva">Potreban broj miševa:</label>
+  <input
+    type="number"
+    id="potrebanBrojMiseva"
+    [(ngModel)]="zeljenePreference.potrebanBrojMiseva"
+    name="potrebanBrojMiseva"
+    min="0"
+    max="3"
+  />
+  <br />
+
+  <button (click)="potvrdiPreference()">Potvrdi</button>
+</form>

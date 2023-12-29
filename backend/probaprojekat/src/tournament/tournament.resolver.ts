@@ -20,12 +20,12 @@ export class TournamentResolver {
   @Query(() => Tournament)
   async addTournament(input: Tournament) {
     await this.neo4jService.addTournament(
-      input.name,
-      input.date,
-      input.place,
-      input.numberOfTeamsMax,
-      input.numberOfTeamsNow,
-      input.price,
+      input.naziv,
+      input.datumOdrzavanja,
+      input.mestoOdrzavanja,
+      input.maxBrojTimova,
+      input.trenutniBrojTimova,
+      input.nagrada,
     );
     return {
       message: 'success',

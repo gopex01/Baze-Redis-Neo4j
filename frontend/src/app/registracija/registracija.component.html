@@ -1,0 +1,130 @@
+<form>
+  <div class="radio-label">
+    <input
+      type="radio"
+      id="igrac"
+      name="tipRegistracije"
+      value="igrac"
+      [(ngModel)]="tipRegistracije"
+    />
+    Igrač
+  </div>
+  <div class="radio-label">
+    <input
+      type="radio"
+      id="organizator"
+      name="tipRegistracije"
+      value="organizator"
+      [(ngModel)]="tipRegistracije"
+    />
+    Organizator
+  </div>
+  <br />
+  <br />
+  <br />
+  <div *ngIf="tipRegistracije === 'organizator'">
+    <div>
+      <label for="korisnickoIme">Korisničko ime:</label>
+      <input
+        type="text"
+        id="korisnickoIme"
+        [(ngModel)]="organizator.korisnickoIme"
+        name="korisnickoIme"
+        autocomplete="off"
+        required
+      />
+    </div>
+    <div>
+      <label for="lozinka">Lozinka:</label>
+      <input
+        type="password"
+        id="lozinka"
+        [(ngModel)]="organizator.lozinka"
+        name="lozinka"
+        autocomplete="off"
+        required
+      />
+    </div>
+    <div>
+      <label for="ime">Ime:</label>
+      <input
+        type="text"
+        id="ime"
+        [(ngModel)]="organizator.ime"
+        name="ime"
+        autocomplete="off"
+        required
+      />
+    </div>
+    <div>
+      <label for="prezime">Prezime:</label>
+      <input
+        type="text"
+        id="prezime"
+        [(ngModel)]="organizator.prezime"
+        name="prezime"
+        autocomplete="off"
+        required
+      />
+    </div>
+    <button (click)="registrujSeKaoOrganizator()">Registruj se</button>
+  </div>
+
+  <div *ngIf="tipRegistracije === 'igrac'">
+    <div>
+      <label for="korisnickoIme">Korisničko ime:</label>
+      <input
+        type="text"
+        id="korisnickoIme"
+        [(ngModel)]="igrac.korisnickoIme"
+        name="korisnickoIme"
+        autocomplete="off"
+        required
+      />
+    </div>
+    <div>
+      <label for="lozinka">lozinka</label>
+      <input
+        type="password"
+        id="lozinka"
+        [(ngModel)]="igrac.lozinka"
+        name="lozinka"
+        autocomplete="off"
+        required
+      />
+    </div>
+    <div>
+      <label for="ime">Ime:</label>
+      <input
+        type="text"
+        id="ime"
+        [(ngModel)]="igrac.ime"
+        name="ime"
+        required
+        autocomplete="off"
+      />
+    </div>
+    <div>
+      <label for="prezime">Prezime:</label>
+      <input
+        type="text"
+        id="prezime"
+        [(ngModel)]="igrac.prezime"
+        name="prezime"
+        autocomplete="off"
+        required
+      />
+    </div>
+    <div>
+      <label for="vodjaTima">Vodja tima:</label>
+      <input
+        type="checkbox"
+        id="vodjaTima"
+        [(ngModel)]="igrac.vodjaTima"
+        name="vodjaTima"
+        autocomplete="off"
+      />
+    </div>
+    <button (click)="registrujSeKaoIgrac()">Registruj se</button>
+  </div>
+</form>
