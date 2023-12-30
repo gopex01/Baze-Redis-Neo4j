@@ -20,4 +20,6 @@ export class Tournament {
   nagrada: number;
   @Field(() => [ID])
   registrationsIds: string[];
+  @Field(() => ID)
+  organizatorId: string;
 }

@@ -62,6 +62,10 @@ export class IgracResolver {
     return await this.neo4jService.getTeammates(turnirId, igracId);
   }
   @Query(() => Player)
+  async vratiMoguceSaigrace(igracId: string) {
+    return await this.neo4jService.vratiMoguceSaigrace(igracId);
+  }
+  @Query(() => Player)
   async isPlayerRegisteredForTournament(
     tournamentId: string,
     playerId: string,

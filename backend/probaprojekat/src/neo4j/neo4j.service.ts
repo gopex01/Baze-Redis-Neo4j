@@ -3,13 +3,15 @@ import { ConfigService } from '@nestjs/config';
 import { Driver, Session, session } from 'neo4j-driver';
 import neo4j from 'neo4j-driver';
 import { throwIfEmpty } from 'rxjs';
+import { jwtConstants } from 'src/auth/constants';
 import { MessageEntity } from 'src/message/message.entity';
 import { MessageService } from 'src/message/message.service';
 import { Organizator } from 'src/organizator/organizator.entity';
 import { Player } from 'src/player/player.entity';
 import { Registration } from 'src/registration/registration.entity';
 import { Tournament } from 'src/tournament/tournament.entity';
-
+import { JwtService } from '@nestjs/jwt';
+import { Role } from 'src/roles/role.enum';
 @Injectable()
 export class Neo4jService {
   private readonly driver;
@@ -17,6 +19,7 @@ export class Neo4jService {
   constructor(
     private readonly configService: ConfigService,
     private readonly messageService: MessageService,
+    private jwtService: JwtService,
   ) {
     this.driver = neo4j.driver(
       'bolt://localhost:7687',
@@ -26,11 +29,17 @@ export class Neo4jService {
 
   //!---------------------TOURNAMENT-----------------------------
   async allTournaments() {
-    console.log('vracam sve turnire');
     const session: Session = this.driver.session();
     try {
       const result = await session.run('MATCH (t:TOURNAMENT) RETURN t ');
-      return result.records.map((record) => record.get('t').properties);
+      let turniri = [];
+      result.records.map((record) => {
+        const turnir = record.get('t').properties;
+        turnir.id = record.get('t').identity.toString();
+        turniri.push(turnir);
+      });
+      console.log(turniri);
+      return turniri;
     } finally {
       await session.close();
     }
@@ -42,13 +51,76 @@ export class Neo4jService {
     numberOfTeamsMax: number,
     numberOfTeamsNow: number,
     price: number,
+    token: string,
   ) {
     const session: Session = this.driver.session();
     try {
-      const result = await session.run(
-        'CREATE (n:TOURNAMENT {naziv:$name,datumOdrzavanja:$date,mestoOdrzavanja:$place,maxBrojTimova:$numberOfTeamsMax,trenutniBrojTimova:$numberOfTeamsNow,nagrada:$price}) RETURN n',
-        { name, date, place, numberOfTeamsMax, numberOfTeamsNow, price },
-      );
+      const noviToken = token.split(' ')[1];
+      const dekodiraniToken = (await this.jwtService.verify(noviToken, {
+        secret: jwtConstants.secret,
+      })) as any;
+      const idOrganizatora = dekodiraniToken.sub;
+
+      const query = `
+        MATCH (o) WHERE ID(o) = toInteger($idOrganizatora)
+        CREATE (n:TOURNAMENT {
+          naziv: $name,
+          datumOdrzavanja: $date,
+          mestoOdrzavanja: $place,
+          maxBrojTimova: $numberOfTeamsMax,
+          trenutniBrojTimova: $numberOfTeamsNow,
+          nagrada: $price
+        })<-[:CREATED_BY]-(o)
+        RETURN n
+      `;
+
+      await session.run(query, {
+        idOrganizatora,
+        name,
+        date,
+        place,
+        numberOfTeamsMax,
+        numberOfTeamsNow,
+        price,
+      });
+    } finally {
+      await session.close();
+    }
+  }
+  async vratiMojeTurnire(token: string) {
+    const session: Session = this.driver.session();
+    try {
+      const noviToken = token.split(' ')[1];
+      const dekodiraniToken = (await this.jwtService.verify(noviToken, {
+        secret: jwtConstants.secret,
+      })) as any;
+      console.log('uloga je' + dekodiraniToken.role);
+      if (dekodiraniToken.role == Role.Igrac) {
+        const idIgraca = dekodiraniToken.sub;
+        //MATCH (p)-[:PARTICIPATES_IN]->(r:Registration)-[:REGISTRATION_FOR]->(t)
+        const query = `MATCH (p) WHERE ID(p) =toInteger($idIgraca)
+      MATCH (p)-[:PARTICIPATES_IN]->(r:Registration)-[:REGISTRATION_FOR]->(t:TOURNAMENT)
+      RETURN t
+      `;
+        await session.run(query, { idIgraca });
+      }
+      if (dekodiraniToken.role == Role.Organizator) {
+        const idOrganizatora = dekodiraniToken.sub;
+        const query = `MATCH (o) WHERE ID(o)=toInteger($idOrganizatora) MATCH (o)-[:CREATED_BY]->(t:TOURNAMENT) RETURN t`;
+        const result = await session.run(query, { idOrganizatora });
+        // const id = result.records[0].get('t').identity.toString();
+        // const podaci = result.records.map(
+        //   (record) => record.get('t').properties,
+        // );
+        let turniri = [];
+        result.records.map((record) => {
+          const turnir = record.get('t').properties;
+          turnir.id = record.get('t').identity.toString();
+          turniri.push(turnir);
+        });
+        console.log(turniri);
+        return turniri;
+      }
     } finally {
       await session.close();
     }
@@ -105,7 +177,14 @@ export class Neo4jService {
       }
       query += ' RETURN t';
       const result = await session.run(query, params);
-      return result.records.map((record) => record.get('t').properties);
+      let turniri = [];
+      result.records.map((record) => {
+        const turnir = record.get('t').properties;
+        turnir.id = record.get('t').identity.toString();
+        turniri.push(turnir);
+      });
+      console.log(turniri);
+      return turniri;
     } finally {
       await session.close();
     }
@@ -187,7 +266,6 @@ export class Neo4jService {
 
       if (result.records.length > 0) {
         const player = result.records[0].get('n').properties;
-        console.log(player);
         const id = result.records[0].get('n').identity.toString();
         player.id = id;
         player.registrationIds = [];
@@ -356,6 +434,20 @@ export class Neo4jService {
     const players = result.records.map((record) => record.get('p').properties);
     return players;
   }
+  async vratiMoguceSaigrace(igracId: string) {
+    const session: Session = await this.driver.session();
+
+    try {
+      const query = `
+      MATCH (p)
+      WHERE NOT ID(p) = toInteger($igracId) AND NOT p.VodjaTima = true
+      RETURN p
+    `;
+      return await session.run(query, { igracId });
+    } finally {
+      await session.close();
+    }
+  }
   //!---------------REGISTRATION---------------
   async getRegistration(registrationId: string) {
     const session = await this.driver.session();
@@ -415,6 +507,31 @@ export class Neo4jService {
       await session.close();
     }
   }
+  async vratiPrijavuPoId(registrationId: string) {
+    const session: Session = await this.driver.session();
+    try {
+      const query = `MATCH (r) WHERE ID(r)=toInteger($registrationId)
+     RETURN r`;
+      await session.run(query, { registrationId });
+    } finally {
+      await session.close();
+    }
+  }
+  async odjaviSvojTimSaTurnira(turnirId: string, igracId: string) {
+    const session: Session = await this.driver.session();
+    try {
+      // MATCH (p:Player)-[:PARTICIPATES_IN]->(r:Registration)-[:REGISTRATION_FOR]->(t)
+      const query = `
+      MATCH (t) WHERE ID(t)=toInteger($turnirId)
+      MATCH (p) WHERE ID(p)=toInteger($igracId)
+      MATCH (p)-[:PARTICIPATES_IN]->(r:Registration)-[:REGISTRATION_FOR]->(t)
+      DETACH DELETE r
+      `;
+      await session.run(query, { turnirId, igracId });
+    } finally {
+      await session.close();
+    }
+  }
   //!-----------ORGANIZATOR----------------
   async findOneOrganizator(username: string) {
     const session: Session = this.driver.session();
@@ -439,7 +556,6 @@ export class Neo4jService {
     }
   }
   async registrujOrganizatora(organizator: Organizator) {
-    console.log('pokusaj registr organizaotr');
     const session: Session = await this.driver.session();
     try {
       const query = `CREATE (o:Organizator{korisnickoIme:$organizator.korisnickoIme,lozinka:$organizator.lozinka,ime:$organizator.ime,prezime:$organizator.prezime })`;

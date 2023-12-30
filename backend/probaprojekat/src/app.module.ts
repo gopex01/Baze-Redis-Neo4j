@@ -21,6 +21,7 @@ import { RedisService } from './redis-client/redis.service';
 import { cors } from 'cors'; // Dodaj import za cors
 import { OrganizatorModule } from './organizator/organizator.module';
 import { AuthModule } from './auth/auth.module';
+import { JwtService } from '@nestjs/jwt';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -52,6 +53,7 @@ import { AuthModule } from './auth/auth.module';
     Neo4jService,
     MessageService,
     RedisService,
+    JwtService,
   ],
 })
 export class AppModule {}

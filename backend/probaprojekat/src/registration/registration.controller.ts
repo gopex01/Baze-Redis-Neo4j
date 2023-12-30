@@ -1,9 +1,24 @@
-import { Controller, Post, Body, Get, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
 import { Registration } from './registration.entity';
 import { RegistrationResolver } from './registration.resolver';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { IgracGuard } from 'src/auth/igrac.role.guard';
+import { VodjaGuard } from 'src/auth/vodja.role.guard';
 @Controller('prijava')
 export class RegistrationController {
   constructor(private readonly registrationResolver: RegistrationResolver) {}
+  @Get(':id')
+  vratiPrijavuPoId(@Param('id') id: string) {
+    return this.registrationResolver.vratiPrijavuPoId(id);
+  }
   @Post('dodajPrijavu')
   async createRegistration(@Body() newRegistration: Registration) {
     return await this.registrationResolver.createRegistration(newRegistration);
@@ -28,7 +43,17 @@ export class RegistrationController {
       registrationId,
     );
   }
-  //todo odjaviSvojTimSaTurnira
+  @UseGuards(JwtAuthGuard, IgracGuard, VodjaGuard)
+  @Delete('odjaviSvojTimSaTurnira/:turnirId/:igracId')
+  async odjaviSvojTimSaTurnira(
+    @Param('turnirId') turnirId: string,
+    @Param('igracId') igracId: string,
+  ) {
+    return await this.registrationResolver.odjaviSvojTimSaTurnira(
+      turnirId,
+      igracId,
+    );
+  }
   // @Get('getAllRegistrationsFromPlayer/:PlayerUsername')
   // async getAllRegistrationsFromPlayer(@Param('PlayerUsername') PlayerUsername:string)
   // {

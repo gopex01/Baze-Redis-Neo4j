@@ -37,14 +37,12 @@ export class AuthService {
   }
 
   async login(korisnik: any) {
-    console.log('korisnik username je' + korisnik.korisnickoIme);
     const payload = {
       username: korisnik.korisnickoIme,
       sub: korisnik.id,
       role: korisnik.role,
     };
     const tok = this.jwtService.sign(payload);
-    console.log('acces token je ' + tok);
     return {
       access_token: this.jwtService.sign(payload),
       korisnik: korisnik,

@@ -13,4 +13,6 @@ export class Organizator {
   ime: string;
   @Field()
   prezime: string;
+  @Field(() => [ID])
+  tournamentsIds: string[];
 }

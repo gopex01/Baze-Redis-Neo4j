@@ -23,4 +23,12 @@ export class RegistrationResolver {
   async removeTeamFromTournament(registrationId: string) {
     return await this.neo4jService.removeTeamFromTournament(registrationId);
   }
+  @Query(() => Registration)
+  async vratiPrijavuPoId(registrationId: string) {
+    return await this.neo4jService.vratiPrijavuPoId(registrationId);
+  }
+  @Query(() => Registration)
+  async odjaviSvojTimSaTurnira(turniraId: string, igracId: string) {
+    return await this.neo4jService.odjaviSvojTimSaTurnira(turniraId, igracId);
+  }
 }

@@ -27,7 +27,11 @@ export class PlayerController {
   async getAllPlayers() {
     return this.igracResolver.getAllPlayers();
   }
-
+  @UseGuards(JwtAuthGuard, IgracGuard)
+  @Get('vratiMoguceSaigrace')
+  async vratiMoguceSaigrace(@Request() req: any) {
+    return await this.igracResolver.vratiMoguceSaigrace(req.user.userId);
+  }
   @Get('dohvatiIgraca/:username')
   async getOnePlayer(@Param('username') username: string) {
     return this.igracResolver.getOnePlayer(username);

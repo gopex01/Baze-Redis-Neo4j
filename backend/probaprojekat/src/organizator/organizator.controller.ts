@@ -24,11 +24,12 @@ export class OrganizatorController {
     return await this.organizatorResolver.registrujOrganizatora(organizator);
   }
   @UseGuards(JwtAuthGuard, OrganizatorGuard)
-  daLiJeOrganizatorTurnira(
+  @Get('daLiJeOrganizatorTurnira/:organizatorId/:turnirId')
+  async daLiJeOrganizatorTurnira(
     @Param('organizatorId') organizationId: string,
     @Param('turnirId') turnirId: string,
   ) {
-    return this.organizatorResolver.daLiJeOrganizatorTurnira(
+    return await this.organizatorResolver.daLiJeOrganizatorTurnira(
       organizationId,
       turnirId,
     );
