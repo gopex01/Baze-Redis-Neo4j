@@ -23,7 +23,23 @@ export class PrijavaService {
     const headers = this.storeService.pribaviHeaders();
 
     const url = this.prijavaUrl + 'dodajPrijavu';
-    return this.http.post(url, prijava, { headers }).subscribe((p: any) => {
+    let novaPrijava = {
+      id: prijava.id,
+      nazivTima: prijava.nazivTima,
+      potrebanBrojSlusalica: prijava.potrebanBrojSlusalica,
+      potrebanBrojRacunara: prijava.potrebanBrojRacunara,
+      potrebanBrojTastatura: prijava.potrebanBrojTastatura,
+      potrebanBrojMiseva: prijava.potrebanBrojMiseva,
+      tournamentId: prijava.turnir?.id,
+      playersIds: [],
+    };
+    let IgraciIds: any = [];
+    prijava.igraci.forEach((p) => {
+      IgraciIds.push(p.id);
+    });
+    novaPrijava.playersIds = IgraciIds;
+    console.log(novaPrijava);
+    return this.http.post(url, novaPrijava, { headers }).subscribe((p: any) => {
       if (p.porukaGreske == undefined) {
         this.store.dispatch(PrijavaActions.OcistiStore());
         this.store.dispatch(IgracActions.ocistiStore());

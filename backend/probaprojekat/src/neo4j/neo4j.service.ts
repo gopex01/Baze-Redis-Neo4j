@@ -251,7 +251,14 @@ export class Neo4jService {
     const session: Session = this.driver.session();
     try {
       const result = await session.run('MATCH (n:Player) RETURN n');
-      return result.records.map((record) => record.get('n').properties);
+      let igraci = [];
+      result.records.map((record) => {
+        const igrac = record.get('p').properties;
+        igrac.id = record.get('p').identity.toString();
+        igraci.push(igrac);
+      });
+      console.log(igraci);
+      return igraci;
     } finally {
       await session.close();
     }
@@ -439,11 +446,17 @@ export class Neo4jService {
 
     try {
       const query = `
-      MATCH (p)
-      WHERE NOT ID(p) = toInteger($igracId) AND NOT p.VodjaTima = true
-      RETURN p
+      MATCH (p:Player) WHERE NOT ID(p) = toInteger($igracId) RETURN p
     `;
-      return await session.run(query, { igracId });
+      //todo  AND p.VodjaTima = true dodati
+      const result = await session.run(query, { igracId });
+      let igraci = [];
+      result.records.map((record) => {
+        const igrac = record.get('p').properties;
+        igrac.id = record.get('p').identity.toString();
+        igraci.push(igrac);
+      });
+      return igraci;
     } finally {
       await session.close();
     }
@@ -456,6 +469,7 @@ export class Neo4jService {
     return result.records.map((record) => record.get('r').properties);
   }
   async createRegistration(newRegistration: Registration) {
+    //TODO ogranicanja za prijave, sa drugi back
     const session: Session = await this.driver.session();
     try {
       const query = `MATCH (t) WHERE ID(t)=toInteger($newRegistration.tournamentId)
@@ -478,7 +492,9 @@ export class Neo4jService {
         'prijavljeni ste na turnir',
         'delivered',
       );
-
+      return {
+        porukaGreske: undefined,
+      };
       // newRegistration.PlayersIds.forEach(async (playerId) => {
       //   message.playerId = playerId;
       //   message.tournamentId = newRegistration.TournamentId;
@@ -573,6 +589,10 @@ export class Neo4jService {
       MATCH (o)-[r:CREATED]->(t)
       RETURN COUNT(r) as count
       `;
+      const result = await session.run(query, { organizatorId, turnirId });
+      const count = result.records[0].get('count').toInt();
+      console.log(result.records[0]);
+      return count > 0;
       await session.run(query, { organizatorId, turnirId });
     } finally {
       await session.close();

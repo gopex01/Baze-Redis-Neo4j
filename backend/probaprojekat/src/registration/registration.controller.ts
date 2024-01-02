@@ -19,10 +19,18 @@ export class RegistrationController {
   vratiPrijavuPoId(@Param('id') id: string) {
     return this.registrationResolver.vratiPrijavuPoId(id);
   }
+  @UseGuards(JwtAuthGuard, IgracGuard)
   @Post('dodajPrijavu')
-  async createRegistration(@Body() newRegistration: Registration) {
-    return await this.registrationResolver.createRegistration(newRegistration);
+  async createRegistration(@Body() newRegistration: any) {
+    try {
+      return await this.registrationResolver.createRegistration(
+        newRegistration,
+      );
+    } catch (error) {
+      return { porukaGreske: 'Došlo je do greške prilikom obrade prijave.' };
+    }
   }
+
   @Get('getRegistration/:registrationId')
   async getRegistration(@Param('registrationId') registrationId: string) {
     return await this.registrationResolver.getRegistration(registrationId);
