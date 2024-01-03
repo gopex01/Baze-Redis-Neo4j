@@ -138,44 +138,54 @@ export class Neo4jService {
     }
   }
   async filterTournaments(
-    pretragaNaziv: string | undefined,
-    pretragaMesto: string | undefined,
-    pretragaPocetniDatum: string | undefined,
-    pretragaKrajnjiDatum: string | undefined,
-    pretragaPocetnaNagrada: number | undefined,
-    pretragaKrajnjaNagrada: number | undefined,
+    pretragaNaziv: string,
+    pretragaMesto: string,
+    pretragaPocetniDatum: string,
+    pretragaKrajnjiDatum: string,
+    pretragaPocetnaNagrada: number,
+    pretragaKrajnjaNagrada: number,
   ) {
     const session: Session = this.driver.session();
     try {
+      console.log('filtiranje');
       let query = 'MATCH (t:TOURNAMENT) WHERE 1=1';
 
       const params: { [key: string]: any } = {};
 
       if (pretragaNaziv) {
-        query += ' AND t.naziv CONTAINS $pretragaNaziv';
+        console.log('pretragaNaziv');
+        query += ' AND t.naziv = $pretragaNaziv';
         params.pretragaNaziv = pretragaNaziv;
       }
 
       if (pretragaMesto) {
+        console.log('pretragaMesto');
         query += ' AND t.mestoOdrzavanja CONTAINS $pretragaMesto';
         params.pretragaMesto = pretragaMesto;
       }
 
       // Ovo je primjer za filtriranje prema datumima, potrebno je prilagoditi zahtjevima vaše baze podataka
       if (pretragaPocetniDatum && pretragaKrajnjiDatum) {
+        console.log('pretragaPocetniDatum');
         query +=
           ' AND t.datumOdrzavanja >= $pretragaPocetniDatum AND t.datumOdrzavanja <= $pretragaKrajnjiDatum';
         params.pretragaPocetniDatum = pretragaPocetniDatum;
         params.pretragaKrajnjiDatum = pretragaKrajnjiDatum;
       }
 
-      if (pretragaPocetnaNagrada && pretragaKrajnjaNagrada) {
-        query +=
-          ' AND t.nagrada >= $pretragaPocetnaNagrada AND t.nagrada <= $pretragaKrajnjaNagrada';
+      if (pretragaPocetnaNagrada) {
+        console.log('pocnetna nagrada je ' + pretragaPocetnaNagrada);
+        query += ' AND t.nagrada > $pretragaPocetnaNagrada ';
         params.pretragaPocetnaNagrada = pretragaPocetnaNagrada;
+      }
+      if (pretragaKrajnjaNagrada) {
+        query += ' AND t.nagrada < $pretragaKrajnjaNagrada ';
         params.pretragaKrajnjaNagrada = pretragaKrajnjaNagrada;
       }
+
       query += ' RETURN t';
+      console.log(query);
+      console.log(params);
       const result = await session.run(query, params);
       let turniri = [];
       result.records.map((record) => {
