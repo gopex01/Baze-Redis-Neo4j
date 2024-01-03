@@ -20,7 +20,8 @@ export class RegistrationResolver {
   }
   //ovo je brisanje prijave
   @Query(() => Registration)
-  async removeTeamFromTournament(registrationId: string) {
+  async removeTeamFromTournament(registrationId) {
+    console.log('registracija id iz resolver je' + registrationId);
     return await this.neo4jService.removeTeamFromTournament(registrationId);
   }
   @Query(() => Registration)

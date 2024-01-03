@@ -47,6 +47,7 @@ export class RegistrationController {
   async removeTeamFromTournament(
     @Param('registrationId') registrationId: string,
   ) {
+    console.log('controller id je ' + registrationId);
     return await this.registrationResolver.removeTeamFromTournament(
       registrationId,
     );

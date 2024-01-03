@@ -94,7 +94,7 @@ export class Neo4jService {
       const dekodiraniToken = (await this.jwtService.verify(noviToken, {
         secret: jwtConstants.secret,
       })) as any;
-      console.log('uloga je' + dekodiraniToken.role);
+
       if (dekodiraniToken.role == Role.Igrac) {
         const idIgraca = dekodiraniToken.sub;
         //MATCH (p)-[:PARTICIPATES_IN]->(r:Registration)-[:REGISTRATION_FOR]->(t)
@@ -118,7 +118,7 @@ export class Neo4jService {
           turnir.id = record.get('t').identity.toString();
           turniri.push(turnir);
         });
-        console.log(turniri);
+
         return turniri;
       }
     } finally {
@@ -126,12 +126,12 @@ export class Neo4jService {
     }
   }
   async deleteTournament(turnirId: string) {
+    console.log('brisem turnir sa id' + turnirId);
     const session: Session = this.driver.session();
     try {
       const query = `
       MATCH (t) WHERE ID(t)=toInteger($turnirId) 
-      MATCH (r:Registration)-[p:REGISTRATION_FOR]->(t)
-      DETACH DELETE r`;
+      DETACH DELETE t`;
       await session.run(query, { turnirId });
     } finally {
       await session.close();
@@ -183,7 +183,7 @@ export class Neo4jService {
         turnir.id = record.get('t').identity.toString();
         turniri.push(turnir);
       });
-      console.log(turniri);
+
       return turniri;
     } finally {
       await session.close();
@@ -198,6 +198,7 @@ export class Neo4jService {
       );
       if (result.records.length > 0) {
         const tournament = result.records[0].get('n').properties;
+        tournament.id = result.records[0].get('n').identity.toString();
         return tournament;
       } else {
         return null;
@@ -217,6 +218,7 @@ export class Neo4jService {
       const record = result.records[0];
       if (record) {
         const node = record.get('t').properties;
+        node.id = record.get('t').identity.toString();
         return node;
       } else {
         return {
@@ -242,7 +244,7 @@ export class Neo4jService {
         'CREATE (n:Player {korisnickoIme:$Username, lozinka:$Password, ime:$Name, prezime:$Surname,vodjaTima:$TeamLeader}) RETURN n',
         { Username, Password, Name, Surname, TeamLeader },
       );
-      console.log(result.records.map((record) => record.get('n').properties));
+      //console.log(result.records.map((record) => record.get('n').properties));
     } finally {
       await session.close();
     }
@@ -257,7 +259,7 @@ export class Neo4jService {
         igrac.id = record.get('p').identity.toString();
         igraci.push(igrac);
       });
-      console.log(igraci);
+
       return igraci;
     } finally {
       await session.close();
@@ -318,9 +320,12 @@ export class Neo4jService {
         'MATCH (n:Player) WHERE n.korisnickoIme CONTAINS $username RETURN n',
         { username },
       );
-      const players = result.records.map(
-        (record) => record.get('n').properties,
-      );
+      let players = [];
+      result.records.map((record) => {
+        const igrac = record.get('n').properties;
+        igrac.id = record.get('n').identity.toString();
+        players.push(igrac);
+      });
       return players;
     } finally {
       await session.close();
@@ -338,7 +343,7 @@ export class Neo4jService {
       const result = await session.run(query, { IdPlayer, newPlayer });
       if (result.records.length > 0) {
         const updatedPlayer = result.records[0].get('n').properties;
-        console.log(updatedPlayer);
+
         return updatedPlayer;
       } else {
         return null;
@@ -361,7 +366,7 @@ export class Neo4jService {
       `;
       const result = await session.run(query, { tournamentId, playerId });
       const count = result.records[0].get('count').toInt();
-      console.log(result.records[0]);
+
       return count > 0;
     } finally {
       await session.close();
@@ -416,7 +421,13 @@ export class Neo4jService {
     [REGISTRATION_FOR]->(t:TOURNAMENT)
     RETURN t`;
     const result = await session.run(query, { playerUsername });
-    const turniri = result.records.map((record) => record.get('t').properties);
+    let turniri = [];
+    result.records.map((record) => {
+      const turnir = record.get('t').properties;
+      turnir.id = record.get('t').identity.toString();
+      turniri.push(turnir);
+    });
+
     return turniri;
   }
   async getAllPlayersOnTournament(tournamentName: string) {
@@ -427,7 +438,13 @@ export class Neo4jService {
     RETURN p
   `;
     const result = await session.run(query, { tournamentName });
-    const igraci = result.records.map((record) => record.get('p').properties);
+    let igraci = [];
+    result.records.map((record) => {
+      const igrac = record.get('p').properties;
+      igrac.id = record.get('p').identity.toString();
+      igraci.push(igraci);
+    });
+
     return igraci;
   }
   async getTeammates(turnirId: string, playerId: string) {
@@ -438,8 +455,13 @@ export class Neo4jService {
       WHERE NOT ID(p) = toInteger($playerId)
       RETURN p`;
     const result = await session.run(query, { turnirId, playerId });
-    const players = result.records.map((record) => record.get('p').properties);
-    return players;
+    let igraci = [];
+    result.records.map((record) => {
+      const igrac = record.get('p').properties;
+      igrac.id = record.get('p').identity.toString();
+      igraci.push(igrac);
+    });
+    return igraci;
   }
   async vratiMoguceSaigrace(igracId: string) {
     const session: Session = await this.driver.session();
@@ -511,14 +533,20 @@ export class Neo4jService {
     RETURN r
     `;
     const result = await session.run(query, { tournamentId });
-    return result.records.map((record) => record.get('r').properties);
+    const registrations = [];
+    result.records.map((record) => {
+      const prijava = record.get('r').properties;
+      prijava.id = record.get('r').identity.toString();
+      registrations.push(prijava);
+    });
+    return registrations;
   }
   async removeTeamFromTournament(registrationId: string) {
     const session: Session = await this.driver.session();
+    console.log('BRISEM PRJIAVU sa id' + registrationId);
     try {
-      const query = `MATCH (r) WHERE ID(r)=toInteger($registrationId)
-    DETACH DELETE r`;
-      await session.run(query, { registrationId });
+      const query = `MATCH (r) WHERE ID(r)=toInteger($registrationId) DETACH DELETE r`;
+      return await session.run(query, { registrationId });
     } finally {
       await session.close();
     }
@@ -528,7 +556,10 @@ export class Neo4jService {
     try {
       const query = `MATCH (r) WHERE ID(r)=toInteger($registrationId)
      RETURN r`;
-      await session.run(query, { registrationId });
+      const result = await session.run(query, { registrationId });
+      return result.records.map((record) =>
+        record.get('r').properties.toString(),
+      );
     } finally {
       await session.close();
     }
@@ -586,14 +617,12 @@ export class Neo4jService {
       const query = `
       MATCH(o) WHERE ID(o)=toInteger($organizatorId)
       MATCH(t) WHERE ID(t)=toInteger($turnirId)
-      MATCH (o)-[r:CREATED]->(t)
+      MATCH (o)-[r:CREATED_BY]->(t)
       RETURN COUNT(r) as count
       `;
       const result = await session.run(query, { organizatorId, turnirId });
       const count = result.records[0].get('count').toInt();
-      console.log(result.records[0]);
       return count > 0;
-      await session.run(query, { organizatorId, turnirId });
     } finally {
       await session.close();
     }
