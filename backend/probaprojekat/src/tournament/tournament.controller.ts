@@ -62,12 +62,6 @@ export class TournamentController {
       pretragaKrajnjaNagrada,
     );
   }
-  @UseInterceptors(CacheInterceptor)
-  @CacheTTL(30)
-  @Get('getOneTournament/:name')
-  async getOneTournament(@Param('name') name: string) {
-    return await this.tournamentResolver.getOneTournament(name);
-  }
 
   @UseInterceptors(CacheInterceptor)
   @CacheTTL(30)
@@ -82,5 +76,18 @@ export class TournamentController {
     return await this.tournamentResolver.getAllPlayersOnTournament(
       tournamentName,
     );
+  }
+
+  @UseInterceptors(CacheInterceptor)
+  @Get('searchTournament/:name')
+  async searchTournament(@Param('name') name:string)
+  {
+    return await this.tournamentResolver.searchTournament(name);
+  }
+
+  @Get('getLastFive')
+  async getLastFive()
+  {
+    return await this.tournamentResolver.getLastFiveTournaments();
   }
 }

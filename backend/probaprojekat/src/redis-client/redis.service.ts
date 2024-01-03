@@ -14,7 +14,19 @@ export class RedisService {
   async get(key: string): Promise<string | null> {
     return await this.redisClient.get(key);
   }
+  async getFirstFiveKeys():Promise<string[]>
+  {
+    const allKeys=await this.redisClient.keys('*');
+    const firstFiveKeys=allKeys.slice(0,5);
+    return firstFiveKeys;
+  }
+  async getValuesOfKeys(keys:string[]):Promise<(string|null)[]>
+  {
+    const values=await this.redisClient.mget(keys);
+    return values;
+  }
   getClient() {
     return this.redisClient;
   }
+
 }
