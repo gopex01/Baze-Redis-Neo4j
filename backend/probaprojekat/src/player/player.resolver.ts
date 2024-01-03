@@ -7,12 +7,13 @@ export class IgracResolver {
   constructor(private readonly neo4jService: Neo4jService) {}
   @Query(() => Player)
   async addPlayer(input: Player) {
+    console.log('front je povezan');
     await this.neo4jService.savePlayer(
-      input.username,
-      input.password,
-      input.name,
-      input.surname,
-      input.teamLeader,
+      input.korisnickoIme,
+      input.lozinka,
+      input.ime,
+      input.prezime,
+      input.vodjaTima,
     );
     return {
       message: 'success',
@@ -26,20 +27,17 @@ export class IgracResolver {
   async getOnePlayer(username: string) {
     return await this.neo4jService.getOnePlayer(username);
   }
+  // @Query(() => Player)
+  // async findOne(username: string) {
+  //   return await this.neo4jService.findOne(username);
+  // }
   @Query(() => Player)
   async getPlayersWithSimilarUsername(username: string) {
     return await this.neo4jService.getPlayersWithSimilarUsername(username);
   }
   @Query(() => Player)
-  async changeData(idPlayer: string, newPlayer: Player) {
-    return await this.neo4jService.changeData(
-      idPlayer,
-      newPlayer.username,
-      newPlayer.password,
-      newPlayer.name,
-      newPlayer.surname,
-      newPlayer.teamLeader,
-    );
+  async changePlayerData(idPlayer: string, newPlayer: Player) {
+    return await this.neo4jService.changePlayerData(idPlayer, newPlayer);
   }
   @Query(() => Player)
   async getPlayerById(playerId: string) {
@@ -60,8 +58,12 @@ export class IgracResolver {
     return await this.neo4jService.getPlayerTournaments(playerUsername);
   }
   @Query(() => Player)
-  async getTeammates(playerUsername: string, tournamentName: string) {
-    return await this.neo4jService.getTeammates(playerUsername, tournamentName);
+  async getTeammates(turnirId: string, igracId: string) {
+    return await this.neo4jService.getTeammates(turnirId, igracId);
+  }
+  @Query(() => Player)
+  async vratiMoguceSaigrace(igracId: string) {
+    return await this.neo4jService.vratiMoguceSaigrace(igracId);
   }
   @Query(() => Player)
   async isPlayerRegisteredForTournament(

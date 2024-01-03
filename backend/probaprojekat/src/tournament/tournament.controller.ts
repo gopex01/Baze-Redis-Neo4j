@@ -3,45 +3,55 @@ import {
   CacheTTL,
   Controller,
   Delete,
+  Headers,
   Get,
   Param,
   Post,
   UseInterceptors,
+  UseGuards,
+  Query,
 } from '@nestjs/common';
 import { TournamentResolver } from './tournament.resolver';
 import { Tournament } from './tournament.entity';
 import { CacheInterceptor } from '@nestjs/cache-manager';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { OrganizatorGuard } from 'src/auth/organizator.role.guard';
 
-@Controller('Tournament')
+@Controller('turnir')
 export class TournamentController {
   constructor(private readonly tournamentResolver: TournamentResolver) {}
-  @Get('allTournaments')
+  @Get('sviTurniri')
   async allTournaments() {
     return this.tournamentResolver.allTournaments();
   }
-  @Post('addTournament')
-  async addTournament(@Body() tournament: Tournament) {
-    return this.tournamentResolver.addTournament(tournament);
+  @UseGuards(JwtAuthGuard)
+  @Get('mojiTurniri')
+  async vratiMojeTurnire(@Headers('authorization') authorization: string) {
+    return await this.tournamentResolver.vratiMojeTurnire(authorization);
   }
-  @Delete('deleteTournament/:tournamentId')
+  @UseGuards(JwtAuthGuard, OrganizatorGuard)
+  @Post('dodajTurnir')
+  async addTournament(
+    @Body() tournament: Tournament,
+    @Headers('authorization') authorization: string,
+  ) {
+    return this.tournamentResolver.addTournament(tournament, authorization);
+  }
+  @Delete('obrisiTurnir/:tournamentId')
   async deleteTournament(@Param('tournamentId') tournamentId: string) {
     return this.tournamentResolver.deleteTournament(tournamentId);
   }
   //!NE RADI
   @Get(
-    'filterTournaments/:pretragaNaziv/:pretragaMesto/:pretragaPocetniDatum/:pretragaKrajnjiDatum/:pretragaPocetnaNagrada/:pretragaKrajnjaNagrada',
+    'filtrirajTurnire/:pretragaNaziv?/:pretragaMesto?/:pretragaPocetniDatum?/:pretragaKrajnjiDatum?/:pretragaPocetnaNagrada?/:pretragaKrajnjaNagrada?',
   )
   async filterTournaments(
-    @Param('pretragaNaziv') pretragaNaziv: string | undefined = '',
-    @Param('pretragaMesto') pretragaMesto: string | undefined = '',
-    @Param('pretragaPocetniDatum')
-    pretragaPocetniDatum: string | undefined = '',
-    @Param('pretragaKrajnjiDatum')
-    pretragaKrajnjiDatum: string | undefined = '',
-    @Param('pretragaPocetnaNagrada')
-    pretragaPocetnaNagrada: number | undefined = 0,
-    @Param('pretragaKrajnjaNagrada')
-    pretragaKrajnjaNagrada: number | undefined = 0,
+    @Query('pretragaNaziv') pretragaNaziv: string,
+    @Query('pretragaMesto') pretragaMesto: string,
+    @Query('pretragaPocetniDatum') pretragaPocetniDatum: string,
+    @Query('pretragaKrajnjiDatum') pretragaKrajnjiDatum: string,
+    @Query('pretragaPocetnaNagrada') pretragaPocetnaNagrada: number,
+    @Query('pretragaKrajnjaNagrada') pretragaKrajnjaNagrada: number,
   ) {
     return this.tournamentResolver.filterTournaments(
       pretragaNaziv,

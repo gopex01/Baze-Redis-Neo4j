@@ -1,0 +1,44 @@
+/* Stilizacija za app-search-bar */
+app-search-bar {
+  margin-bottom: 20px;
+}
+
+/* Stilizacija za .container */
+.container {
+  background-color: #f5f5f5;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* Stilizacija za h3 */
+h3 {
+  color: #007bff;
+  margin-bottom: 20px;
+}
+
+/* Stilizacija za .turnir-list */
+.turnir-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Stilizacija za .turnir-list li */
+.turnir-list li {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 15px;
+  transition: transform 0.2s ease-in-out;
+}
+
+/* Stilizacija za .turnir-list li:hover */
+.turnir-list li:hover {
+  transform: translateY(-5px);
+}

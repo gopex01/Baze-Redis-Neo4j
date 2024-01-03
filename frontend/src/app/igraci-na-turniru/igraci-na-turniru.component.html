@@ -1,0 +1,14 @@
+<h2>Prijavljeni igrači za turnir</h2>
+
+<div *ngIf="turnirId !== null; else noTurnir">
+  <p>Turnir ID: {{ turnirId }}</p>
+
+  <ul>
+    <li *ngFor="let igrac of prijavljeniIgraci$ | async">
+      <app-igrac [igrac]="igrac"></app-igrac>
+    </li>
+  </ul>
+</div>
+<ng-template #noTurnir>
+  <p>Nije odabran nijedan turnir.</p>
+</ng-template>

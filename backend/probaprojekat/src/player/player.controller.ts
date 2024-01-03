@@ -1,33 +1,57 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Request,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { IgracResolver } from './player.resolver';
 import { Player } from './player.entity';
 import { identity } from 'rxjs';
-
-@Controller('player')
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { IgracGuard } from 'src/auth/igrac.role.guard';
+//
+@Controller('igrac')
 export class PlayerController {
   constructor(private readonly igracResolver: IgracResolver) {}
-  @Post('addPlayer')
+  @Post('registrujIgraca')
   async addPlayer(@Body() player: Player) {
     return this.igracResolver.addPlayer(player);
   }
+
   @Get('getAllPlayers')
   async getAllPlayers() {
     return this.igracResolver.getAllPlayers();
   }
-  @Get('getOnePlayer/:username')
+  @UseGuards(JwtAuthGuard, IgracGuard)
+  @Get('vratiMoguceSaigrace')
+  async vratiMoguceSaigrace(@Request() req: any) {
+    return await this.igracResolver.vratiMoguceSaigrace(req.user.userId);
+  }
+  @Get('dohvatiIgraca/:username')
   async getOnePlayer(@Param('username') username: string) {
     return this.igracResolver.getOnePlayer(username);
   }
-  @Get('getSimilarPlayers/:username')
+
+  @Get('korisnickoIme/:username')
   async getPlayersWithSimilarUsername(@Param('username') username: string) {
     return this.igracResolver.getPlayersWithSimilarUsername(username);
   }
-  @Patch('changeData/:idPlayer')
-  async changeData(
-    @Param('idPlayer') idPlayer: string,
-    @Body() newPlayer: Player,
-  ) {
-    return await this.igracResolver.changeData(idPlayer, newPlayer);
+  // @Get('findOne/:username')
+  // findOne(@Param('username') username: string) {
+  //   return this.igracResolver.findOne(username);
+  // }
+  @UseGuards(JwtAuthGuard, IgracGuard)
+  @Put('izmeniPodatkeOIgracu')
+  async changeData(@Request() req: any, @Body() newPlayer: Player) {
+    return await this.igracResolver.changePlayerData(
+      req.user.userId,
+      newPlayer,
+    );
   }
   @Get('getPlayerById/:playerId')
   async getPlayerById(@Param('playerId') playerId: string) {
@@ -47,17 +71,14 @@ export class PlayerController {
   async getPlayerTournaments(@Param('playerUsername') playerUsername: string) {
     return await this.igracResolver.getPlayerTournaments(playerUsername);
   }
-  @Get('getTeammates/:playerUsername/:tournamentName')
+  @Get('vratiIgraceIzIstogTima/:turnirId/:igracId')
   async getTeammates(
-    @Param('playerUsername') playerUsername: string,
-    @Param('tournamentName') tournamentName: string,
+    @Param('turnirId') turnirId: string,
+    @Param('igracId') igracId: string,
   ) {
-    return await this.igracResolver.getTeammates(
-      playerUsername,
-      tournamentName,
-    );
+    return await this.igracResolver.getTeammates(turnirId, igracId);
   }
-  @Get('isPlayerRegisteredForTournament/:tournamentId/:playerId')
+  @Get('daLiJeIgracPrijavljenNaTurnir/:tournamentId/:playerId')
   async isPlayerRegisteredForTournament(
     @Param('tournamentId')
     tournamentId: string,

@@ -1,0 +1,78 @@
+<!-- search-bar.component.html -->
+<form class="search-form">
+  <div class="form-group">
+    <label for="naziv">Naziv:</label>
+    <input
+      type="text"
+      id="naziv"
+      name="naziv"
+      [(ngModel)]="pretragaNaziv"
+      placeholder="Unesite naziv"
+      class="form-control"
+    />
+  </div>
+
+  <div class="form-group">
+    <label for="mesto">Mesto:</label>
+    <input
+      type="text"
+      id="mesto"
+      name="mesto"
+      [(ngModel)]="pretragaMesto"
+      placeholder="Unesite mesto"
+      class="form-control"
+    />
+  </div>
+
+  <div class="date-group">
+    <div class="form-group">
+      <label for="pocetniDatum">Početni datum:</label>
+      <input
+        type="date"
+        id="pocetniDatum"
+        name="pocetniDatum"
+        [(ngModel)]="pretragaPocetniDatum"
+        class="form-control"
+      />
+    </div>
+    <div class="form-group">
+      <label for="krajnjiDatum">Krajnji datum:</label>
+      <input
+        type="date"
+        id="krajnjiDatum"
+        name="krajnjiDatum"
+        [(ngModel)]="pretragaKrajnjiDatum"
+        class="form-control"
+      />
+    </div>
+  </div>
+
+  <div class="price-group">
+    <div class="form-group">
+      <label for="pocetnaNagrada">Minimalna vrednost nagrade</label>
+      <input
+        type="number"
+        id="pocetnaNagrada"
+        name="pocetnaNagrada"
+        [(ngModel)]="pretragaPocetnaNagrada"
+        placeholder="Unesite minimalnu vrednost nagrade"
+        class="form-control"
+      />
+    </div>
+    <div class="form-group">
+      <label for="krajnjaNagrada">Maksimalna vrednost nagrade</label>
+      <input
+        type="number"
+        id="krajnjaNagrada"
+        name="krajnjaNagrada"
+        [(ngModel)]="pretragaKrajnjaNagrada"
+        placeholder="Unesite maksimalnu vrednost nagrade"
+        class="form-control"
+      />
+    </div>
+  </div>
+
+  <div class="form-group">
+    <button (click)="filtrirajTurnire()">Pretraga</button>
+  </div>
+</form>

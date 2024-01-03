@@ -5,6 +5,7 @@ import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Inject } from '@nestjs/common';
 import { Cache } from 'cache-manager';
 import { RedisService } from 'src/redis-client/redis.service';
+import { jwtConstants } from 'src/auth/constants';
 
 @Resolver(() => Tournament)
 export class TournamentResolver {
@@ -18,14 +19,19 @@ export class TournamentResolver {
     return await this.neo4jService.allTournaments();
   }
   @Query(() => Tournament)
-  async addTournament(input: Tournament) {
+  async vratiMojeTurnire(auth: string) {
+    return await this.neo4jService.vratiMojeTurnire(auth);
+  }
+  @Query(() => Tournament)
+  async addTournament(input: Tournament, token: string) {
     await this.neo4jService.addTournament(
-      input.name,
-      input.date,
-      input.place,
-      input.numberOfTeamsMax,
-      input.numberOfTeamsNow,
-      input.price,
+      input.naziv,
+      input.datumOdrzavanja,
+      input.mestoOdrzavanja,
+      input.maxBrojTimova,
+      input.trenutniBrojTimova,
+      input.nagrada,
+      token,
     );
     return {
       message: 'success',
@@ -37,12 +43,12 @@ export class TournamentResolver {
   }
   @Query(() => Tournament)
   async filterTournaments(
-    pretragaNaziv: string | undefined,
-    pretragaMesto: string | undefined,
-    pretragaPocetniDatum: string | undefined,
-    pretragaKrajnjiDatum: string | undefined,
-    pretragaPocetnaNagrada: number | undefined,
-    pretragaKrajnjaNagrada: number | undefined,
+    pretragaNaziv: string,
+    pretragaMesto: string,
+    pretragaPocetniDatum: string,
+    pretragaKrajnjiDatum: string,
+    pretragaPocetnaNagrada: number,
+    pretragaKrajnjaNagrada: number,
   ) {
     return await this.neo4jService.filterTournaments(
       pretragaNaziv,

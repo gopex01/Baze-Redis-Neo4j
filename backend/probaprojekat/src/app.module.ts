@@ -18,7 +18,10 @@ import { RedisClientOptions } from 'redis';
 import { MessageModule } from './message/message.module';
 import { MessageService } from './message/message.service';
 import { RedisService } from './redis-client/redis.service';
-
+import { cors } from 'cors'; // Dodaj import za cors
+import { OrganizatorModule } from './organizator/organizator.module';
+import { AuthModule } from './auth/auth.module';
+import { JwtService } from '@nestjs/jwt';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -38,8 +41,10 @@ import { RedisService } from './redis-client/redis.service';
     AlbumModule,
     PlayerModule,
     TournamentModule,
+    AuthModule,
     RegistrationModule,
     MessageModule,
+    OrganizatorModule,
   ],
   controllers: [AppController],
   providers: [
@@ -48,6 +53,7 @@ import { RedisService } from './redis-client/redis.service';
     Neo4jService,
     MessageService,
     RedisService,
+    JwtService,
   ],
 })
 export class AppModule {}

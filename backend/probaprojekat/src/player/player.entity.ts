@@ -1,20 +1,20 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql';
+import { Role } from 'src/roles/role.enum';
 
 @ObjectType()
 export class Player {
   @Field(() => ID)
   id: string;
-
   @Field()
-  username: string;
+  korisnickoIme: string;
   @Field()
-  password: string;
+  lozinka: string;
   @Field()
-  name: string;
+  ime: string;
   @Field()
-  surname: string;
+  prezime: string;
   @Field()
-  teamLeader: boolean;
+  vodjaTima: boolean;
   @Field(() => [ID])
   registrationIds: string[];
 }

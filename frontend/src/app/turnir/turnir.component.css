@@ -1,0 +1,56 @@
+/* Stilizacija turnir div-a */
+.turnir {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.turnir h2 {
+  font-size: 24px;
+  color: #333;
+  margin: 0;
+}
+
+.turnir p {
+  font-size: 16px;
+  color: #666;
+  margin: 5px 0;
+}
+
+/* Stilizacija dugmadi */
+
+/* Stilizacija lista */
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+/* Stilizacija labele */
+.turnir label {
+  font-weight: bold;
+  color: #555; /* Boja teksta za labelu */
+  margin-right: 5px; /* Razmak sa desne strane labele */
+}
+
+/* Stilizacija dugmadi */
+/* Stilizacija dugmadi */
+.turnir button {
+  background-color: #0375f7; /* Boja pozadine dugmeta */
+  color: #fff; /* Boja teksta na dugmetu */
+  padding: 12px 20px; /* Prostor unutar dugmeta */
+  border: none; /* Bez ivica oko dugmeta */
+  border-radius: 15px; /* Zaobljeni uglovi */
+  font-size: 13x; /* Veličina fonta */
+  cursor: pointer; /* Pokazivač miša se menja na ruku prilikom hover-a */
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out; /* Animacija za hover efekat */
+  margin-right: 10px; /* Razmak između dugmadi */
+}
+
+.turnir button:hover {
+  background-color: #1100ff; /* Boja pozadine dugmeta na hover-u */
+  color: #fff; /* Boja teksta na hover-u */
+}

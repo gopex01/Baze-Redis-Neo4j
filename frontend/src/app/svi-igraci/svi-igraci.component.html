@@ -1,0 +1,37 @@
+<h2 class="section-title">Igrači</h2>
+<div class="search-container">
+  <label for="uneseniIgrac">Unesite ime igrača</label>
+  <input
+    type="text"
+    id="uneseniIgrac"
+    [(ngModel)]="uneseniIgrac"
+    name="uneseniIgrac"
+    autocomplete="off"
+    class="search-input"
+  />
+  <button (click)="pretraziIgrace(uneseniIgrac)" class="search-button">
+    Pretraži
+  </button>
+</div>
+<ul class="player-list" *ngIf="!(pretragaIgraci$ | async)?.length">
+  <li *ngFor="let igrac of sviIgraci$ | async" class="player-item">
+    <app-igrac [igrac]="igrac"></app-igrac>
+    <button (click)="dodajIgracaUtim(igrac)" class="add-button">
+      Dodaj u tim
+    </button>
+  </li>
+</ul>
+<ul class="player-list">
+  <li *ngFor="let igrac of pretragaIgraci$ | async" class="player-item">
+    <app-igrac [igrac]="igrac"></app-igrac>
+    <button (click)="dodajIgracaUtim(igrac)" class="add-button">
+      Dodaj u tim
+    </button>
+  </li>
+</ul>
+<button (click)="navigirajNaPreference()" class="my-button">Preference</button>
+<div class="button-container">
+  <button (click)="navigirajNaPrijavu()" class="my-button">
+    Idi na prijavu
+  </button>
+</div>

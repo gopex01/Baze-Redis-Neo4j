@@ -1,0 +1,61 @@
+<div *ngIf="prijavljeniTurnir$ | async as turnir">
+  <h2>Turnir</h2>
+  <app-turnir [turnir]="turnir" [prikaziDugmice]="false"></app-turnir>
+
+  <ul>
+    <h2>Igraci u timu</h2>
+    <li *ngFor="let igrac of igraciUTimu$ | async">
+      <app-igrac [igrac]="igrac"></app-igrac>
+      <ng-container *ngIf="idTrenutnogKorisnika !== igrac.id">
+        <button
+          (click)="izbaciIgracaIzTima(igrac)"
+          class="custom-button secondary-button"
+        >
+          Izbaci iz tima
+        </button>
+      </ng-container>
+    </li>
+  </ul>
+  <div class="button-container">
+    <button
+      (click)="navigirajNaIgrace()"
+      class="custom-button choose-players-button"
+    >
+      Idi na biranje igraca
+    </button>
+  </div>
+</div>
+<div *ngIf="preference$ | async as preference" class="preference-container">
+  <h2>Preference</h2>
+  <div class="preference-details">
+    <p>Potreban broj slušalica:{{ preference.potrebanBrojSlusalica }}</p>
+    <p>Potreban broj računara:{{ preference.potrebanBrojRacunara }}</p>
+    <p>Potreban broj tastatura:{{ preference.potrebanBrojTastatura }}</p>
+    <p>Potreban broj miševa: {{ preference.potrebanBrojMiseva }}</p>
+  </div>
+  <div class="button-container">
+    <button
+      (click)="navigirajNaPreference()"
+      class="custom-button choose-players-button"
+    >
+      Promeni preference
+    </button>
+  </div>
+</div>
+<label for="nazivTima">naziv tima</label>
+<input
+  type="text"
+  id="nazivTima"
+  [(ngModel)]="prijava.nazivTima"
+  name="nazivTima"
+  autocomplete="off"
+  required
+/>
+<br />
+<br />
+<br />
+<div class="button-container">
+  <button (click)="posaljiPrijavu()" class="custom-button">
+    Posalji prijavu
+  </button>
+</div>

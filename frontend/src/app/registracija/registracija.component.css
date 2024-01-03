@@ -1,0 +1,86 @@
+/* Reset some default browser styles */
+body,
+h1,
+p,
+ul,
+form {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* Center the form on the page */
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #f0f0f0;
+}
+
+/* Style the label and input elements */
+form label {
+  font-size: 16px;
+  margin-bottom: 5px;
+  color: #555;
+}
+
+form input[type="text"],
+form input[type="password"],
+form input[type="radio"],
+form input[type="checkbox"] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+/* Style the radio buttons and labels */
+form input[type="radio"] {
+  margin: 0 5px 0 0; /* Dodajte razmak s desne strane radio dugmeta */
+}
+
+form input[type="radio"] + label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  color: #555;
+}
+
+/* Style the checkboxes and labels */
+form input[type="checkbox"] + label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  color: #555;
+}
+
+/* Style the buttons */
+form button {
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  margin-top: 15px;
+  border-radius: 5px;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+/* Add hover effect to buttons */
+form button:hover {
+  background-color: #0056b3;
+}
+
+/* Style the div containers */
+form div {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  max-width: 300px;
+}

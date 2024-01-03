@@ -7,17 +7,19 @@ export class Tournament {
   @Field(() => ID)
   id: string;
   @Field()
-  name: string;
+  naziv: string;
   @Field()
-  date: string;
+  datumOdrzavanja: string;
   @Field()
-  place: string;
+  mestoOdrzavanja: string;
   @Field()
-  numberOfTeamsMax: number;
+  maxBrojTimova: number;
   @Field()
-  numberOfTeamsNow: number;
+  trenutniBrojTimova: number;
   @Field()
-  price: number;
+  nagrada: number;
   @Field(() => [ID])
   registrationsIds: string[];
+  @Field(() => ID)
+  organizatorId: string;
 }

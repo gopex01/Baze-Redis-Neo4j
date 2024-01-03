@@ -1,0 +1,39 @@
+<nav class="navbar">
+  <ul>
+    <li *ngIf="trenutnoPrijavljeniKorisnik$ | async as prijavljeniKorisnik">
+      <ng-container *ngIf="prijavljeniKorisnik.role === 'organizator'">
+        <a
+          (click)="navigirajNaKreiranjeTurnira()"
+          routerLink="/kreiranjeTurnira"
+          >Kreiraj turnir</a
+        >
+      </ng-container>
+    </li>
+    <li *ngIf="trenutnoPrijavljeniKorisnik$ | async as prijavljeniKorisnik">
+      <a (click)="navigirajNaProfil()" routerLink="profil">Profil</a>
+    </li>
+    <li>
+      <a (click)="navigirajNaPocetnu()" routerLink="">Pocetna</a>
+    </li>
+    <li *ngIf="trenutnoPrijavljeniKorisnik$ | async as prijavljeniKorisnik">
+      <a (click)="navigirajNaMojeTurnire()" routerLink="mojiTurniri"
+        >Moji turniri</a
+      >
+    </li>
+    <li *ngIf="!(trenutnoPrijavljeniKorisnik$ | async)"></li>
+    <li *ngIf="!(trenutnoPrijavljeniKorisnik$ | async)"></li>
+  </ul>
+  <ng-container *ngIf="trenutnoPrijavljeniKorisnik$ | async">
+    <a (click)="OdjaviSe()" routerLink="" class="logout">Odjavi se</a>
+  </ng-container>
+  <ng-container *ngIf="!(trenutnoPrijavljeniKorisnik$ | async)">
+    <a (click)="navigirajNaLogin()" routerLink="login" class="login-link"
+      >Login</a
+    >
+  </ng-container>
+  <ng-container *ngIf="!(trenutnoPrijavljeniKorisnik$ | async)">
+    <a (click)="navigirajNaRegistraciju()" routerLink="Registracija"
+      >Registracija</a
+    >
+  </ng-container>
+</nav>

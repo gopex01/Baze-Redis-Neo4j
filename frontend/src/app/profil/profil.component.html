@@ -1,0 +1,48 @@
+<div
+  *ngIf="trenutnoPrijavljeniKorisnik$ | async as prijavljeniKorisnik"
+  class="profile-container"
+>
+  <h1>Dobrodošli, {{ prijavljeniKorisnik.korisnickoIme }}</h1>
+  <div *ngIf="prijavljeniKorisnik.role === 'igrac'">
+    <p>Ovo je profil igrača.</p>
+  </div>
+  <div *ngIf="prijavljeniKorisnik.role === 'organizator'">
+    <p>Ovo je profil organizatora.</p>
+  </div>
+  <label for="korisnickoIme">Korisničko ime</label>
+  <input
+    type="text"
+    id="korisnickoIme"
+    [(ngModel)]="korisnickoIme"
+    [readonly]="!uredjivanjeOmoguceno"
+  />
+
+  <label for="ime">Ime</label>
+  <input
+    type="text"
+    id="ime"
+    [(ngModel)]="ime"
+    [readonly]="!uredjivanjeOmoguceno"
+  />
+
+  <label for="prezime">Prezime</label>
+  <input
+    type="text"
+    id="prezime"
+    [(ngModel)]="prezime"
+    [readonly]="!uredjivanjeOmoguceno"
+  />
+
+  <button (click)="omoguciUredjivanje()">Uredi</button>
+  <button (click)="promeniPodatke()" [disabled]="!uredjivanjeOmoguceno">
+    Promeni podatke
+  </button>
+  <div
+    *ngIf="!(trenutnoPrijavljeniKorisnik$ | async)"
+    class="profile-container"
+  >
+    <p class="no-user-message">
+      Morate biti prijavljeni da biste videli profil.
+    </p>
+  </div>
+</div>
