@@ -96,7 +96,7 @@ export class TournamentResolver {
     // Postavljanje vrednosti u keš sa vremenom života od 30 sekundi
     await this.redisService
       .getClient()
-      .set(name, JSON.stringify(data), 'ex', 30);
+      .set(name, JSON.stringify(data), 'ex', 30*120);
 
     console.log('Data set to Redis cache', data);
     return data;
