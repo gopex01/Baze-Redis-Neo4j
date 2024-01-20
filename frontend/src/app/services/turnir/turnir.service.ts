@@ -8,6 +8,7 @@ import {
   exhaustMap,
   of,
   tap,
+  toArray,
 } from 'rxjs';
 import { Turnir } from 'src/app/shared/models/turnir';
 
@@ -31,6 +32,11 @@ export class TurnirService {
     const url = this.turnirUrl + 'sviTurniri';
     return this.http.get<Turnir[]>(url);
   }
+  getLastFiveTournaments(): Observable<Turnir[]> {
+    const url = this.turnirUrl + 'getLastFive';
+    return this.http.get<Turnir[]>(url);
+  }
+
   getMojiTurniri(): Observable<Turnir[]> {
     return this.refreshSubject.pipe(
       exhaustMap(() => {
@@ -40,7 +46,11 @@ export class TurnirService {
       })
     );
   }
-
+  searchTournament(nazivTurnira: string) {
+    const headers = this.storeService.pribaviHeaders();
+    const url = this.turnirUrl + `searchTournament/${nazivTurnira}`;
+    return this.http.get<Turnir>(url, { headers });
+  }
   // refresh() {
   //   this.refreshSubject.next([]);
   // }

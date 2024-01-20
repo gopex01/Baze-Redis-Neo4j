@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { TurnirService } from '../services/turnir/turnir.service';
 import { Turnir } from '../shared/models/turnir';
 
@@ -10,6 +10,7 @@ import { Organizator } from '../shared/models/organizator';
 import { selectSviTurniri } from '../shared/state/turnir/turnir.selector';
 import * as PrijavaActions from '../shared/state/prijava/prijava.actions';
 import * as IgracActions from '../shared/state/igrac/igrac.actions';
+import * as TurnirActions from '../shared/state/turnir/turnir.actions';
 
 @Component({
   selector: 'app-home',
@@ -18,7 +19,7 @@ import * as IgracActions from '../shared/state/igrac/igrac.actions';
 })
 export class HomeComponent {
   sviTurniri$: Observable<Turnir[]> = this.turnirService.getTurniriBaza();
-  filtriraniTurniri: Turnir[] = [];
+  //filtriraniTurniri: Turnir[] = [];
   turniriStore$: Observable<Turnir[]> = this.store.select(selectSviTurniri);
   postojeFiltriraniTurniri: boolean = false;
   pretragaIzvrsena: boolean = false;
@@ -32,12 +33,17 @@ export class HomeComponent {
     this.turniriStore$ = this.store.select(selectSviTurniri);
     this.store.dispatch(PrijavaActions.OcistiStore());
     this.store.dispatch(IgracActions.ocistiStore());
+    this.turnirService.getLastFiveTournaments().subscribe((turniri) => {
+      //  this.filtriraniTurniri = p;
+      this.store.dispatch(TurnirActions.fetchTurniriUspesno({ turniri }));
+      // console.log('Stipendija', this.filtriraniTurniri);
+    });
   }
 
   handlePretragaRezultati(rezultati: Turnir[]) {
-    this.filtriraniTurniri = rezultati;
-    this.postojeFiltriraniTurniri =
-      this.filtriraniTurniri && this.filtriraniTurniri.length > 0;
-    this.pretragaIzvrsena = true;
+    // this.filtriraniTurniri = rezultati;
+    // this.postojeFiltriraniTurniri =
+    //   this.filtriraniTurniri && this.filtriraniTurniri.length > 0;
+    // this.pretragaIzvrsena = true;
   }
 }

@@ -501,7 +501,6 @@ export class Neo4jService {
     return result.records.map((record) => record.get('r').properties);
   }
   async createRegistration(newRegistration: Registration) {
-    //TODO ogranicanja za prijave, sa drugi back
     const session: Session = await this.driver.session();
     try {
       const query = `MATCH (t) WHERE ID(t)=toInteger($newRegistration.tournamentId)

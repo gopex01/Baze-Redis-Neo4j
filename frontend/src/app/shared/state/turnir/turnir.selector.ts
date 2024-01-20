@@ -14,7 +14,6 @@ export const selectSviTurniri = createSelector(
   (turniri) =>
     turniri.ids
       .map((id) => turniri.entities[id])
-
       .filter((turnir) => turnir !== null && turnir !== undefined) as Turnir[]
 );
 

@@ -88,26 +88,25 @@ export class TournamentResolver {
     console.log('Data set to cache',data);
     return await data;*/
   }
-  @Query(()=>Tournament)
-  async searchTournament(name:string)
-  {
-    const cachedData=await this.redisService.getClient().get(name);
-    if(cachedData)
-    {
-      console.log('Data from cache ',cachedData);
+  @Query(() => Tournament)
+  async searchTournament(name: string) {
+    const cachedData = await this.redisService.getClient().get(name);
+    if (cachedData) {
+      console.log('Data from cache ', cachedData);
       return JSON.parse(cachedData);
     }
-    const data=await this.neo4jService.getTournament(name);
-    await this.redisService.getClient().set(name,JSON.stringify(data),'ex',30*15);
+    const data = await this.neo4jService.getTournament(name);
+    await this.redisService
+      .getClient()
+      .set('Turnir:' + data.id, JSON.stringify(data), 'ex', 30 * 15);
     console.log('Data set to redis cache', data);
     return data;
   }
-  @Query(()=>Tournament)
-  async getLastFiveTournaments()
-  {
-    const keys=await this.redisService.getFirstFiveKeys();
-    const tournaments=await this.redisService.getValuesOfKeys(keys);
-    return tournaments;
+  @Query(() => Tournament)
+  async getLastFiveTournaments() {
+    const keys = await this.redisService.getFirstFiveKeys();
+    const tournaments = await this.redisService.getValuesOfKeys(keys);
+    return tournaments.map((tournament) => JSON.parse(tournament));
   }
   @Query(() => Tournament)
   async getAllPlayersOnTournament(tournamentName: string) {

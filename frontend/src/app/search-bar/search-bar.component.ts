@@ -28,5 +28,8 @@ export class SearchBarComponent {
     ).subscribe((rezultati) => {
       this.pretragaRezultati.emit(rezultati);
     });
+    await this.turnirService
+      .searchTournament(this.pretragaNaziv)
+      .subscribe((p) => p);
   }
 }
