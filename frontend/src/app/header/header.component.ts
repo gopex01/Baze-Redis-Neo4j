@@ -46,4 +46,7 @@ export class HeaderComponent {
   navigirajNaMojeTurnire() {
     this.router.navigateByUrl('mojiTurniri');
   }
+  navigirajNaPoruke() {
+    this.router.navigateByUrl('poruke');
+  }
 }

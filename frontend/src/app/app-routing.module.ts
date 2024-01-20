@@ -63,6 +63,10 @@ const routes: Routes = [
     path: 'mojiSaigraci/:turnirId/:igracId',
     component: MojiSaigraciComponent,
   },
+  // {
+  //   path:'poruke',
+  //   component: //naziv komponente
+  // },
 ];
 
 @NgModule({
