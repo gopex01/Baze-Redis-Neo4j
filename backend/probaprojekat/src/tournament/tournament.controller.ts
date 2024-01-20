@@ -41,7 +41,7 @@ export class TournamentController {
   async deleteTournament(@Param('tournamentId') tournamentId: string) {
     return this.tournamentResolver.deleteTournament(tournamentId);
   }
-  //!NE RADI
+
   @Get(
     'filtrirajTurnire/:pretragaNaziv?/:pretragaMesto?/:pretragaPocetniDatum?/:pretragaKrajnjiDatum?/:pretragaPocetnaNagrada?/:pretragaKrajnjaNagrada?',
   )
@@ -80,14 +80,12 @@ export class TournamentController {
 
   @UseInterceptors(CacheInterceptor)
   @Get('searchTournament/:name')
-  async searchTournament(@Param('name') name:string)
-  {
+  async searchTournament(@Param('name') name: string) {
     return await this.tournamentResolver.searchTournament(name);
   }
 
   @Get('getLastFive')
-  async getLastFive()
-  {
+  async getLastFive() {
     return await this.tournamentResolver.getLastFiveTournaments();
   }
 }

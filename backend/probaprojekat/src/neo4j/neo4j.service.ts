@@ -411,7 +411,7 @@ export class Neo4jService {
       await session.close();
     }
   }
-  //todo ne radi vrv zbog upit
+
   async updateTournament(tournament: Tournament) {
     const session: Session = this.driver.session();
 
@@ -489,7 +489,7 @@ export class Neo4jService {
       const query = `
       MATCH (p:Player) WHERE NOT ID(p) = toInteger($igracId) RETURN p
     `;
-      //todo  AND p.VodjaTima = true dodati
+
       const result = await session.run(query, { igracId });
       let igraci = [];
       result.records.map((record) => {

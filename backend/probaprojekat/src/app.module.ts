@@ -4,7 +4,6 @@ import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { config, validationSchema } from '../config';
 import { RedisClientModule } from './redis-client/redis-client.module';
-import { AlbumModule } from './album/album.module';
 import { Neo4jModule } from 'nest-neo4j';
 import { RedisClientService } from './redis-client/redis-client.service';
 import { IgracResolver } from './player/player.resolver';
@@ -38,7 +37,6 @@ import { JwtService } from '@nestjs/jwt';
     }),
     CacheModule.register({ isGlobal: true }),
     RedisClientModule,
-    AlbumModule,
     PlayerModule,
     TournamentModule,
     AuthModule,
