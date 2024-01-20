@@ -48,6 +48,7 @@ export class PlayerController {
   @UseGuards(JwtAuthGuard, IgracGuard)
   @Put('izmeniPodatkeOIgracu')
   async changeData(@Request() req: any, @Body() newPlayer: Player) {
+    console.log(newPlayer);
     return await this.igracResolver.changePlayerData(
       req.user.userId,
       newPlayer,

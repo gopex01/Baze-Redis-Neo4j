@@ -25,6 +25,9 @@ export class RedisService {
   }
 
   async getValuesOfKeys(keys: string[]): Promise<(string | null)[]> {
+    if (!keys || keys == undefined || keys == null || keys.length == 0)
+      return null;
+    console.log('kljucevi su' + keys);
     const values = await this.redisClient.mget(keys);
     return values;
   }

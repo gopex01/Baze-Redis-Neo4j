@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Observable, tap } from 'rxjs';
+import { Observable, take, tap } from 'rxjs';
 import { IgracService } from '../services/igrac/igrac.service';
 import { OrganizatorService } from '../services/organizator.service';
 import { StoreService } from '../services/store.service';
 import { Igrac } from '../shared/models/igrac';
 import { Organizator } from '../shared/models/organizator';
-
+import * as KorisnikActions from '../shared/state/korisnik/korisnik.actions';
+import { Store } from '@ngrx/store';
 @Component({
   selector: 'app-profil',
   templateUrl: './profil.component.html',
@@ -34,7 +35,7 @@ export class ProfilComponent {
   constructor(
     private igracService: IgracService,
     private organizatorService: OrganizatorService,
-
+    private store: Store,
     private storeService: StoreService,
     private _snackBar: MatSnackBar
   ) {}
@@ -58,5 +59,22 @@ export class ProfilComponent {
     this._snackBar.open('Uspesno ste promenili svoje podatke', 'Zatvori', {
       duration: 2000,
     });
+    this.storeService
+      .pribaviTrenutnoPrijavljenogKorisnika()
+      .pipe(take(1))
+      .subscribe((korisnik) => {
+        const x: any = {
+          ...korisnik!,
+          korisnickoIme: this.korisnickoIme,
+          ime: this.ime,
+          prezime: this.prezime,
+        };
+        console.log(x);
+        this.store.dispatch(
+          KorisnikActions.postaviPrijavljenogKorisnika({
+            prijavljeniKorisnik: x,
+          })
+        );
+      });
   }
 }

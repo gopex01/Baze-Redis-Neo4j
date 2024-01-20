@@ -20,6 +20,9 @@
         >Moji turniri</a
       >
     </li>
+    <ng-container *ngIf="trenutnoPrijavljeniKorisnik$ | async">
+      <a (click)="navigirajNaPoruke()" routerLink="Poruke">Poruke</a>
+    </ng-container>
     <li *ngIf="!(trenutnoPrijavljeniKorisnik$ | async)"></li>
     <li *ngIf="!(trenutnoPrijavljeniKorisnik$ | async)"></li>
   </ul>
@@ -35,8 +38,5 @@
     <a (click)="navigirajNaRegistraciju()" routerLink="Registracija"
       >Registracija</a
     >
-  </ng-container>
-  <ng-container *ngIf="trenutnoPrijavljeniKorisnik$ | async">
-    <a (click)="navigirajNaPoruke()" routerLink="Poruke">Poruke</a>
   </ng-container>
 </nav>

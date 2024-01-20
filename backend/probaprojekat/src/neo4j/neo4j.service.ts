@@ -356,14 +356,13 @@ export class Neo4jService {
     try {
       const query = `
       MATCH (n) WHERE ID(n) = toInteger($IdPlayer)
-      SET n.korisnickoIme ='smrda',
-          n.ime = 'smrdia',
-          n.prezime = 'smrdic'
+      SET n.korisnickoIme = $newPlayer.korisnickoIme,
+          n.ime = $newPlayer.ime,
+          n.prezime = $newPlayer.prezime
       RETURN n`;
       const result = await session.run(query, { IdPlayer, newPlayer });
       if (result.records.length > 0) {
         const updatedPlayer = result.records[0].get('n').properties;
-
         return updatedPlayer;
       } else {
         return null;
@@ -529,6 +528,12 @@ export class Neo4jService {
       RETURN r
       `;
       await session.run(query, { newRegistration });
+      const query1 = `
+      MATCH(t:TOURNAMENT) WHERE ID(t) =toInteger($newRegistration.tournamentId) 
+      SET t.trenutniBrojTimova = t.trenutniBrojTimova+1
+      RETURN t
+      `; // pushuj tova
+      await session.run(query1, { newRegistration });
       const message: MessageEntity = new MessageEntity(
         'prijavljeni ste na turnir',
         'delivered',

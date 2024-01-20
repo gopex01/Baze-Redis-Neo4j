@@ -17,10 +17,11 @@ export class MessageService {
   }
   async getMessagesforPlayer(playerID: string) {
     const key = `message:${playerID}:*`;
-    console.log(key);
     const keys = await this.redisService.getKeys(key);
     const data = await this.redisService.getValuesOfKeys(keys);
-    console.log(data);
-    return data.map((p) => JSON.parse(p)); // : { stipendija: 'Stipendija' };
+    if (data) {
+      return data.map((p) => JSON.parse(p));
+    }
+    return [];
   }
 }

@@ -106,7 +106,10 @@ export class TournamentResolver {
   async getLastFiveTournaments() {
     const keys = await this.redisService.getFirstFiveKeys();
     const tournaments = await this.redisService.getValuesOfKeys(keys);
-    return tournaments.map((tournament) => JSON.parse(tournament));
+    if (tournaments) {
+      return tournaments.map((tournament) => JSON.parse(tournament));
+    }
+    return [];
   }
   @Query(() => Tournament)
   async getAllPlayersOnTournament(tournamentName: string) {
