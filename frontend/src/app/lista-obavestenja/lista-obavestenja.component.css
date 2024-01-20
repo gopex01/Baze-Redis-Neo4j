@@ -1,0 +1,33 @@
+.mainDiv{
+    display: flex;
+}
+
+.card{
+    border: 2px solid #ddd;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  background: radial-gradient(ellipse at bottom, #5078A0 0%, #1B2735 100%);/* Svetlija nijansa bele boje */
+  display: flex;
+  flex-direction: row;
+  width: 20%;
+}
+  
+  p {
+    font-size: 18px;
+    margin-bottom: 8px;
+    font-family: 'Poppins', sans-serif;
+    color:ivory; /* Srednja boja teksta */
+  }
+  button {
+    margin-top: 10px;
+    padding: 10px;
+    font-family: 'Poppins', sans-serif;
+    background-color: darkgrey;
+    color: #fff; /* Set font color for better contrast */
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 20%;
+  } 

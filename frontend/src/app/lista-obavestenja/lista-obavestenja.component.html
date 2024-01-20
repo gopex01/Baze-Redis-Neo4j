@@ -1,0 +1,5 @@
+<div class="mainDiv">
+    <div *ngFor="let obv of listaObavestenja$ | async " class="card">
+        <app-obavestenje [obavestenje]="obv"></app-obavestenje>
+    </div>
+</div>

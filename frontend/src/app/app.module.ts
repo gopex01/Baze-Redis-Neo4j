@@ -7,7 +7,7 @@ import { HomeComponent } from './home/home.component';
 import { HeaderComponent } from './header/header.component';
 import { KreiranjeTurniraComponent } from './kreiranje-turnira/kreiranje-turnira.component';
 import { FormsModule } from '@angular/forms';
-import { StoreModule } from '@ngrx/store';
+import { Store, StoreModule } from '@ngrx/store';
 import { CommonModule } from '@angular/common';
 
 import { IgracComponent } from './igrac/igrac.component';
@@ -33,6 +33,11 @@ import { MojiSaigraciComponent } from './moji-saigraci/moji-saigraci.component';
 import { initialStateTurnir } from './shared/state/turnir/turnir.state';
 import { turnirReducer } from './shared/state/turnir/turnir.reducer';
 import { igracReducer } from './shared/state/igrac/igrac.reducer';
+import { ObavestenjeComponent } from './obavestenje/obavestenje.component';
+import { ListaObavestenjaComponent } from './lista-obavestenja/lista-obavestenja.component';
+import { obavestenjaReducer } from './shared/state/obavestenja/obavestenja.reducer';
+import { EffectsModule } from '@ngrx/effects';
+import { ObavestenjaEffects } from './shared/state/obavestenja/obavestenja.effect';
 
 @NgModule({
   declarations: [
@@ -54,6 +59,8 @@ import { igracReducer } from './shared/state/igrac/igrac.reducer';
     TimoviNaTurniruComponent,
     MojiTurniriComponent,
     MojiSaigraciComponent,
+    ObavestenjeComponent,
+    ListaObavestenjaComponent,
   ],
   imports: [
     CommonModule,
@@ -77,6 +84,8 @@ import { igracReducer } from './shared/state/igrac/igrac.reducer';
     StoreModule.forFeature('turniriPretraga', turnirReducer),
     StoreModule.forFeature('turniri', turnirReducer),
     StoreModule.forFeature('igraci', igracReducer),
+    StoreModule.forFeature('obavestenja',obavestenjaReducer),
+    EffectsModule.forRoot(ObavestenjaEffects),
   ],
   providers: [],
   bootstrap: [AppComponent],
