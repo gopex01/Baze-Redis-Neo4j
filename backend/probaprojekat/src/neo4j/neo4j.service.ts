@@ -532,7 +532,7 @@ export class Neo4jService {
       MATCH(t:TOURNAMENT) WHERE ID(t) =toInteger($newRegistration.tournamentId) 
       SET t.trenutniBrojTimova = t.trenutniBrojTimova+1
       RETURN t
-      `; // pushuj tova
+      `;
       await session.run(query1, { newRegistration });
       const message: MessageEntity = new MessageEntity(
         'prijavljeni ste na turnir',
