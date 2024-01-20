@@ -19,6 +19,11 @@ export class RedisService {
     const firstFiveKeys = allKeys.slice(0, 5);
     return firstFiveKeys;
   }
+
+  async getKeys(keyPattern: string) {
+    return await this.redisClient.keys(keyPattern);
+  }
+
   async getValuesOfKeys(keys: string[]): Promise<(string | null)[]> {
     const values = await this.redisClient.mget(keys);
     return values;

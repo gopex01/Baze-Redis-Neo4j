@@ -18,9 +18,8 @@ export class MessageController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('getMessagesForPlayer/:playerID')
-  async getMessagesForPlayer(@Request() req:any)
-  {
+  @Get('getMessagesForPlayer')
+  async getMessagesForPlayer(@Request() req: any) {
     return this.messageService.getMessagesforPlayer(req.user.userId);
   }
 }

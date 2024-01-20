@@ -36,7 +36,7 @@
       >Registracija</a
     >
   </ng-container>
-  <ng-container *ngIf="!(trenutnoPrijavljeniKorisnik$ | async)">
-    <a (click)="navigirajNaPoruke()" routerLink="Poruke">Registracija</a>
+  <ng-container *ngIf="trenutnoPrijavljeniKorisnik$ | async">
+    <a (click)="navigirajNaPoruke()" routerLink="Poruke">Poruke</a>
   </ng-container>
 </nav>

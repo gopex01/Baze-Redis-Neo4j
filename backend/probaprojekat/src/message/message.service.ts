@@ -15,10 +15,12 @@ export class MessageService {
     const data = await this.redisService.get(key);
     return data ? JSON.parse(data) : null;
   }
-  async getMessagesforPlayer(playerID:string)
-  {
-    const key=`message:${playerID}:*`;
-    const data=await this.redisService.get(key);
-    return data ? JSON.parse(data):null;
+  async getMessagesforPlayer(playerID: string) {
+    const key = `message:${playerID}:*`;
+    console.log(key);
+    const keys = await this.redisService.getKeys(key);
+    const data = await this.redisService.getValuesOfKeys(keys);
+    console.log(data);
+    return data.map((p) => JSON.parse(p)); // : { stipendija: 'Stipendija' };
   }
 }

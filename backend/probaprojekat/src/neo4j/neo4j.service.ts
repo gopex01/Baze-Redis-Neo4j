@@ -102,7 +102,17 @@ export class Neo4jService {
       MATCH (p)-[:PARTICIPATES_IN]->(r:Registration)-[:REGISTRATION_FOR]->(t:TOURNAMENT)
       RETURN t
       `;
-        await session.run(query, { idIgraca });
+        console.log('query je', query);
+        console.log('id igraca je ', +idIgraca);
+        const result = await session.run(query, { idIgraca });
+        let turniri = [];
+        result.records.map((record) => {
+          const turnir = record.get('t').properties;
+          turnir.id = record.get('t').identity.toString();
+          turniri.push(turnir);
+        });
+
+        return turniri;
       }
       if (dekodiraniToken.role == Role.Organizator) {
         const idOrganizatora = dekodiraniToken.sub;
@@ -523,14 +533,15 @@ export class Neo4jService {
         'prijavljeni ste na turnir',
         'delivered',
       );
+
+      newRegistration.playersIds.forEach(async (playerId) => {
+        message.playerId = playerId;
+        message.tournamentId = newRegistration.tournamentId;
+        await this.messageService.createMessage(message);
+      });
       return {
         porukaGreske: undefined,
       };
-      // newRegistration.PlayersIds.forEach(async (playerId) => {
-      //   message.playerId = playerId;
-      //   message.tournamentId = newRegistration.TournamentId;
-      //   await this.messageService.createMessage(message);
-      // });
     } finally {
       await session.close();
     }

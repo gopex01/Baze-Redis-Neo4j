@@ -12,6 +12,7 @@ import { TimoviNaTurniruComponent } from './timovi-na-turniru/timovi-na-turniru.
 import { RegistracijaComponent } from './registracija/registracija.component';
 import { MojiTurniriComponent } from './moji-turniri/moji-turniri.component';
 import { MojiSaigraciComponent } from './moji-saigraci/moji-saigraci.component';
+import { ListaObavestenjaComponent } from './lista-obavestenja/lista-obavestenja.component';
 
 const routes: Routes = [
   {
@@ -63,10 +64,10 @@ const routes: Routes = [
     path: 'mojiSaigraci/:turnirId/:igracId',
     component: MojiSaigraciComponent,
   },
-  // {
-  //   path:'poruke',
-  //   component: //naziv komponente
-  // },
+  {
+    path: 'poruke',
+    component: ListaObavestenjaComponent,
+  },
 ];
 
 @NgModule({
